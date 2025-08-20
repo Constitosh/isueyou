@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>$tABS — Token Platform</title>
 <style>
-  :root{ --abs-green:#07c160; --bg:#0b1f17; --panel:#0f2a20; --muted:#89b6a0; --text:#e8fff3; }
+  :root{ --abs-green:#07c160; --bg:#0b1f17; --panel:#0f2a20; --muted:#89b6a0; --text:#e8fff3; --danger:#ff6b6b; }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
@@ -41,10 +41,11 @@
   .controls-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .tabbtn{background:transparent;border:1px solid rgba(255,255,255,.18);color:#d9ffe8;border-radius:10px;padding:8px 12px;cursor:pointer}
   .tabbtn.active{background:var(--abs-green);color:#062412;border-color:transparent;box-shadow:0 6px 20px rgba(7,193,96,.35)}
-  .back{display:none}
-  .back.show{display:inline-flex}
+
   .btn{background:var(--abs-green);border:none;color:#062412;font-weight:800;padding:10px 14px;border-radius:10px;cursor:pointer;box-shadow:0 6px 20px rgba(7,193,96,.35)}
   .btn.smol{padding:8px 12px}
+  /* 🔴 red "Clear" button with glow */
+  .btn.danger{ background:var(--danger); color:#2b0f10; box-shadow:0 6px 20px rgba(255,107,107,.45) }
 
   .search{display:flex;gap:10px;min-width:280px}
   .search input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.06);color:var(--text)}
@@ -104,7 +105,8 @@
         <div class="controls-left">
           <button id="tabGainers" class="tabbtn active">🚀 Top Gainers (24h)</button>
           <button id="tabVol" class="tabbtn">📈 Top Vol (24h)</button>
-          <button id="backBtn" class="btn smol mono back">Back</button>
+          <!-- This becomes the red CLEAR button in single‑token mode -->
+          <button id="clearBtn" class="btn smol mono danger" style="display:none">Clear</button>
         </div>
         <div class="search">
           <input id="search" class="mono" placeholder="Paste a CA for single‑token view, or type to filter…" />
@@ -224,22 +226,43 @@ async function addToken(ca){
   return r.json();
 }
 
-// ===== state =====
+// ===== state & UI toggles =====
 let snap=null;
 let mode='gainers';
 let single=false;
 
-function applyMode(){ document.getElementById('tabGainers').classList.toggle('active',mode==='gainers'); document.getElementById('tabVol').classList.toggle('active',mode==='vol'); }
+const tabGainersBtn = document.getElementById('tabGainers');
+const tabVolBtn     = document.getElementById('tabVol');
+const clearBtn      = document.getElementById('clearBtn');
+
+function applyMode(){
+  tabGainersBtn.classList.toggle('active',mode==='gainers');
+  tabVolBtn.classList.toggle('active',mode==='vol');
+}
 async function renderByMode(){
   if(!snap) return;
   const list = mode==='gainers' ? (snap.topGainers||[]) : (snap.topVol||[]);
   await renderTableRows(list);
 }
+function enterSingleTokenMode(){
+  single = true;
+  // Hide tab buttons, show CLEAR (red) in their place
+  tabGainersBtn.style.display = 'none';
+  tabVolBtn.style.display     = 'none';
+  clearBtn.style.display      = 'inline-flex';
+}
+function exitSingleTokenMode(){
+  single = false;
+  document.getElementById('search').value = '';
+  // Restore tabs, hide CLEAR
+  tabGainersBtn.style.display = '';
+  tabVolBtn.style.display     = '';
+  clearBtn.style.display      = 'none';
+}
 
 // ===== single CA =====
 async function renderSingle(ca){
-  single=true;
-  document.getElementById('backBtn').classList.add('show');
+  enterSingleTokenMode();
   document.getElementById('expander').style.display='none';
   try{
     const j = await addToken(ca.toLowerCase());
@@ -269,30 +292,48 @@ async function boot(){
   }
 }
 
-document.getElementById('tabGainers').onclick = async ()=>{ single=false; mode='gainers'; applyMode(); await renderByMode(); };
-document.getElementById('tabVol').onclick     = async ()=>{ single=false; mode='vol';     applyMode(); await renderByMode(); };
+// tab listeners
+tabGainersBtn.onclick = async ()=>{ if(single) return; mode='gainers'; applyMode(); await renderByMode(); };
+tabVolBtn.onclick     = async ()=>{ if(single) return; mode='vol';     applyMode(); await renderByMode(); };
+
+// CLEAR button (red)
+clearBtn.onclick = async ()=>{
+  exitSingleTokenMode();
+  // Re-render default list (top gainers) and show expander again
+  mode='gainers'; applyMode();
+  await renderByMode();
+  document.getElementById('expander').style.display='';
+};
+
+// expander
 document.getElementById('toggleExpand').onclick = ()=>{
   const e=document.getElementById('expander'); e.classList.toggle('open');
   document.getElementById('toggleExpand').textContent = e.classList.contains('open') ? 'Show less (−10)' : 'Show more (+10)';
 };
-document.getElementById('backBtn').onclick = async ()=>{
-  single=false; document.getElementById('backBtn').classList.remove('show'); await renderByMode();
-};
+
+// refresh
 document.getElementById('refresh').onclick = async ()=>{
   const q=(document.getElementById('search').value||'').trim();
   if(q===''){
+    // normal refresh -> keep current mode (unless we’re in single mode)
     try{ snap = await refresh(); } catch{ snap = await latest(); }
     if(snap){
       renderHeaderStats(snap.banner);
       setTracked(snap.tokensTracked || 0);
-      if(!single) await renderByMode();
+      if(!single){
+        await renderByMode();
+        document.getElementById('expander').style.display='';
+      }
     }
   } else if(isCA(q)) {
     await renderSingle(q);
   } else {
-    await renderByMode();
+    // treat as filter string for current list
+    if(!single) await renderByMode();
   }
 };
+
+// filter typing (only in list mode)
 document.getElementById('search').addEventListener('input', async ()=>{
   if(single) return;
   await renderByMode();
