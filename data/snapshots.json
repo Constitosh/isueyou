@@ -1,0 +1,3238 @@
+{
+  "snapshot": {
+    "ts": 1755720306848,
+    "chain": "abstract",
+    "topGainers": [
+      {
+        "baseAddress": "0x15c0a28c93e68cbfa911a6b5cbea1315d53f9035",
+        "name": "$Luma",
+        "symbol": "Luma",
+        "priceChange": {
+          "m5": null,
+          "h1": -3.53,
+          "h6": 5.73,
+          "h24": 44
+        },
+        "marketCap": 225335,
+        "fdv": 225335,
+        "volume24h": 15626.15,
+        "url": "https://dexscreener.com/abstract/0x47b4a07d5034fcb66c9abeb93eee4ea9a9125064"
+      },
+      {
+        "baseAddress": "0xf800a81b454c666390cf7b61462c9b18de23ada8",
+        "name": "SMP7700",
+        "symbol": "SMP",
+        "priceChange": {
+          "m5": null,
+          "h1": 7.74,
+          "h6": 13.76,
+          "h24": 29.38
+        },
+        "marketCap": 2081249,
+        "fdv": 2081249,
+        "volume24h": 95140.55,
+        "url": "https://dexscreener.com/abstract/0xe0f1fed1871bca12aea16ef7de4ed0e69eed448b"
+      },
+      {
+        "baseAddress": "0x3d72ddd35cadb4e5b22cdb20b36f98077be84284",
+        "name": "The Dyslexic Dog",
+        "symbol": "GOD",
+        "priceChange": {
+          "m5": null,
+          "h1": 1.61,
+          "h6": 5.05,
+          "h24": 19.57
+        },
+        "marketCap": 8241169,
+        "fdv": 8241169,
+        "volume24h": 102537.08,
+        "url": "https://dexscreener.com/abstract/0x21261d743f28da76c15f1234d7c1a1bf9165304b"
+      },
+      {
+        "baseAddress": "0x85ca16fd0e81659e0b8be337294149e722528731",
+        "name": "Noot Noot",
+        "symbol": "NOOT",
+        "priceChange": {
+          "m5": 0.48,
+          "h1": 5.3,
+          "h6": 16.44,
+          "h24": 18.42
+        },
+        "marketCap": 5184062,
+        "fdv": 5184062,
+        "volume24h": 169323.54,
+        "url": "https://dexscreener.com/abstract/0x299270c5d97c23b2a5d4c8e045ef8682197b8fc0"
+      },
+      {
+        "baseAddress": "0x3bb6d7504d5c4b251799e5959f8336eae6129db1",
+        "name": "JockDaRock",
+        "symbol": "JOCK",
+        "priceChange": {
+          "m5": -3.69,
+          "h1": -14.05,
+          "h6": -4.02,
+          "h24": 18.19
+        },
+        "marketCap": 159279,
+        "fdv": 159279,
+        "volume24h": 27368.5,
+        "url": "https://dexscreener.com/abstract/0x6474cc50e4ea28ea147a759c764266decf365c22"
+      },
+      {
+        "baseAddress": "0x1cd6edb761ed1d68c3cc3c5b9b3e9460887fd139",
+        "name": "DITH'S CAT",
+        "symbol": "CYCLOPS",
+        "priceChange": {
+          "m5": 2.22,
+          "h1": 5.33,
+          "h6": 17.14,
+          "h24": 16.88
+        },
+        "marketCap": 2468444,
+        "fdv": 2468444,
+        "volume24h": 46515.95,
+        "url": "https://dexscreener.com/abstract/0x0fc6e222f4e27189801909c610ae6172cb69e5a5"
+      },
+      {
+        "baseAddress": "0x52629ddbf28aa01aa22b994ec9c80273e4eb5b0a",
+        "name": "RETSBA",
+        "symbol": "RETSBA",
+        "priceChange": {
+          "m5": -0.2,
+          "h1": 1.13,
+          "h6": 7.85,
+          "h24": 11.02
+        },
+        "marketCap": 5284610,
+        "fdv": 5488844,
+        "volume24h": 40104.94,
+        "url": "https://dexscreener.com/abstract/0x26e7f241fc81bb168f9f81401184cde74dcc8f31"
+      },
+      {
+        "baseAddress": "0x987cf44f3f5d854ec0703123d7fd003a8b56ebb4",
+        "name": "Pengus Wife",
+        "symbol": "Polly",
+        "priceChange": {
+          "m5": -0.23,
+          "h1": 0.85,
+          "h6": 11.22,
+          "h24": 10.62
+        },
+        "marketCap": 7097524,
+        "fdv": 7097524,
+        "volume24h": 109550.06,
+        "url": "https://dexscreener.com/abstract/0x51afcb298c275c13c59b38f1cabb5900268a8c8a"
+      },
+      {
+        "baseAddress": "0x1c26da604221466976beeb509698152ba8a3a13f",
+        "name": "Grind",
+        "symbol": "GRIND",
+        "priceChange": {
+          "m5": 0.16,
+          "h1": 0.96,
+          "h6": 8.49,
+          "h24": 10.31
+        },
+        "marketCap": 5313698,
+        "fdv": 5313698,
+        "volume24h": 28651,
+        "url": "https://dexscreener.com/abstract/0xf973bac8b0cabf7d33b6e367ca1d581cee2d52ae"
+      },
+      {
+        "baseAddress": "0xdf70075737e9f96b078ab4461eee3e055e061223",
+        "name": "Bigcoin",
+        "symbol": "BIG",
+        "priceChange": {
+          "m5": -0.68,
+          "h1": -0.39,
+          "h6": 5.59,
+          "h24": 8.94
+        },
+        "marketCap": 11796952,
+        "fdv": 11796952,
+        "volume24h": 425750.08,
+        "url": "https://dexscreener.com/abstract/0x4e8e8cc1c6548aa41ecb187967d377bf15673c15"
+      },
+      {
+        "baseAddress": "0x921b7a3591893f3bb9bc881a4cefe05aafa98323",
+        "name": "PUDGY INVEST",
+        "symbol": "INVEST",
+        "priceChange": {
+          "m5": 0.35,
+          "h1": 0.88,
+          "h6": 16.6,
+          "h24": 6.96
+        },
+        "marketCap": 288023,
+        "fdv": 288023,
+        "volume24h": 14497.42,
+        "url": "https://dexscreener.com/abstract/0x39245204ec78ea40253729f6cf34155a95c47238"
+      },
+      {
+        "baseAddress": "0xa9053dc939d74222f7aa0b3a2be407abbfd56c6a",
+        "name": "Yield Guild Games Token",
+        "symbol": "YGG",
+        "priceChange": {
+          "m5": null,
+          "h1": 1.3,
+          "h6": 4.44,
+          "h24": 6.52
+        },
+        "marketCap": 92567702,
+        "fdv": 7374825,
+        "volume24h": 51344.34,
+        "url": "https://dexscreener.com/abstract/0x157beaa1c7dcc2aad79846ec693c558609ebc0ea"
+      },
+      {
+        "baseAddress": "0x817c16910e27880f55ff2c57f206e458549d96e3",
+        "name": "Dark Pengu",
+        "symbol": "DPengu",
+        "priceChange": {
+          "m5": null,
+          "h1": 0.73,
+          "h6": 7.82,
+          "h24": 6.25
+        },
+        "marketCap": 606612,
+        "fdv": 606612,
+        "volume24h": 15499.42,
+        "url": "https://dexscreener.com/abstract/0xa91de33390dcc7c2a2fd586dc3bc7155953e9d1e"
+      },
+      {
+        "baseAddress": "0x9ebe3a824ca958e4b3da772d2065518f009cba62",
+        "name": "Pudgy Penguins",
+        "symbol": "PENGU",
+        "priceChange": {
+          "m5": 0.17,
+          "h1": 3.16,
+          "h6": 9.17,
+          "h24": 3.75
+        },
+        "marketCap": 1979599531,
+        "fdv": 87781966,
+        "volume24h": 1095116.45,
+        "url": "https://dexscreener.com/abstract/0xda7d037fda848177141e037f9d0c67cae7b53262"
+      },
+      {
+        "baseAddress": "0x95d7c69694e66aa5010346f8bd23462f6d9a5ae5",
+        "name": "EUREKA",
+        "symbol": "ERK",
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 7.12,
+          "h24": 3.52
+        },
+        "marketCap": 926445,
+        "fdv": 926445,
+        "volume24h": 5867.85,
+        "url": "https://dexscreener.com/abstract/0xdc6e7a72ab98e6cb6fec5edd4ce77ed4e489ddc9"
+      }
+    ],
+    "topVol": [
+      {
+        "baseAddress": "0x9ebe3a824ca958e4b3da772d2065518f009cba62",
+        "name": "Pudgy Penguins",
+        "symbol": "PENGU",
+        "priceChange": {
+          "m5": 0.17,
+          "h1": 3.16,
+          "h6": 9.17,
+          "h24": 3.75
+        },
+        "marketCap": 1979599531,
+        "fdv": 87781966,
+        "volume24h": 1095116.45,
+        "url": "https://dexscreener.com/abstract/0xda7d037fda848177141e037f9d0c67cae7b53262"
+      },
+      {
+        "baseAddress": "0xdf70075737e9f96b078ab4461eee3e055e061223",
+        "name": "Bigcoin",
+        "symbol": "BIG",
+        "priceChange": {
+          "m5": -0.68,
+          "h1": -0.39,
+          "h6": 5.59,
+          "h24": 8.94
+        },
+        "marketCap": 11796952,
+        "fdv": 11796952,
+        "volume24h": 425750.08,
+        "url": "https://dexscreener.com/abstract/0x4e8e8cc1c6548aa41ecb187967d377bf15673c15"
+      },
+      {
+        "baseAddress": "0xc325b7e2736a5202bd860f5974d0aa375e57ede5",
+        "name": "ABSTER",
+        "symbol": "ABSTER",
+        "priceChange": {
+          "m5": -0.2,
+          "h1": -1.54,
+          "h6": 4.1,
+          "h24": 2.59
+        },
+        "marketCap": 28883159,
+        "fdv": 28883159,
+        "volume24h": 188716.43,
+        "url": "https://dexscreener.com/abstract/0x2ea80dbb81ade30cab6a74911165d928440633a2"
+      },
+      {
+        "baseAddress": "0x85ca16fd0e81659e0b8be337294149e722528731",
+        "name": "Noot Noot",
+        "symbol": "NOOT",
+        "priceChange": {
+          "m5": 0.48,
+          "h1": 5.3,
+          "h6": 16.44,
+          "h24": 18.42
+        },
+        "marketCap": 5184062,
+        "fdv": 5184062,
+        "volume24h": 169323.54,
+        "url": "https://dexscreener.com/abstract/0x299270c5d97c23b2a5d4c8e045ef8682197b8fc0"
+      },
+      {
+        "baseAddress": "0x987cf44f3f5d854ec0703123d7fd003a8b56ebb4",
+        "name": "Pengus Wife",
+        "symbol": "Polly",
+        "priceChange": {
+          "m5": -0.23,
+          "h1": 0.85,
+          "h6": 11.22,
+          "h24": 10.62
+        },
+        "marketCap": 7097524,
+        "fdv": 7097524,
+        "volume24h": 109550.06,
+        "url": "https://dexscreener.com/abstract/0x51afcb298c275c13c59b38f1cabb5900268a8c8a"
+      },
+      {
+        "baseAddress": "0xaf31d07af1602dfce07fba81bca5f9570ca83983",
+        "name": "Rich Whale Alliance",
+        "symbol": "RWA",
+        "priceChange": {
+          "m5": -0.12,
+          "h1": -0.75,
+          "h6": 2.26,
+          "h24": 3.14
+        },
+        "marketCap": 1816672,
+        "fdv": 1816672,
+        "volume24h": 103944.14,
+        "url": "https://dexscreener.com/abstract/0x9d735b41918b3fc495c7de540f7213a979050859"
+      },
+      {
+        "baseAddress": "0x3d72ddd35cadb4e5b22cdb20b36f98077be84284",
+        "name": "The Dyslexic Dog",
+        "symbol": "GOD",
+        "priceChange": {
+          "m5": null,
+          "h1": 1.61,
+          "h6": 5.05,
+          "h24": 19.57
+        },
+        "marketCap": 8241169,
+        "fdv": 8241169,
+        "volume24h": 102537.08,
+        "url": "https://dexscreener.com/abstract/0x21261d743f28da76c15f1234d7c1a1bf9165304b"
+      },
+      {
+        "baseAddress": "0xf800a81b454c666390cf7b61462c9b18de23ada8",
+        "name": "SMP7700",
+        "symbol": "SMP",
+        "priceChange": {
+          "m5": null,
+          "h1": 7.74,
+          "h6": 13.76,
+          "h24": 29.38
+        },
+        "marketCap": 2081249,
+        "fdv": 2081249,
+        "volume24h": 95140.55,
+        "url": "https://dexscreener.com/abstract/0xe0f1fed1871bca12aea16ef7de4ed0e69eed448b"
+      },
+      {
+        "baseAddress": "0xdc70311f4b19774828aa4a57520a7153af5e58a5",
+        "name": "PURGY PENGOON",
+        "symbol": "GOONER",
+        "priceChange": {
+          "m5": null,
+          "h1": 2.21,
+          "h6": 8.92,
+          "h24": 3.04
+        },
+        "marketCap": 6844846,
+        "fdv": 6844846,
+        "volume24h": 79013.82,
+        "url": "https://dexscreener.com/abstract/0x43fd2d9ec85d48e32b8982907a3497ee1a81706d"
+      },
+      {
+        "baseAddress": "0xea08d82824e871a163fdeb7d7c6000521f1be4dd",
+        "name": "GUGO",
+        "symbol": "GUGO",
+        "priceChange": {
+          "m5": null,
+          "h1": 1.46,
+          "h6": 6.68,
+          "h24": -2.09
+        },
+        "marketCap": 9322752,
+        "fdv": 9322752,
+        "volume24h": 75469.67,
+        "url": "https://dexscreener.com/abstract/0xe59a3d6f77e6d0c5daf1da740ab65adc3b674012"
+      },
+      {
+        "baseAddress": "0xa9053dc939d74222f7aa0b3a2be407abbfd56c6a",
+        "name": "Yield Guild Games Token",
+        "symbol": "YGG",
+        "priceChange": {
+          "m5": null,
+          "h1": 1.3,
+          "h6": 4.44,
+          "h24": 6.52
+        },
+        "marketCap": 92567702,
+        "fdv": 7374825,
+        "volume24h": 51344.34,
+        "url": "https://dexscreener.com/abstract/0x157beaa1c7dcc2aad79846ec693c558609ebc0ea"
+      },
+      {
+        "baseAddress": "0x1cd6edb761ed1d68c3cc3c5b9b3e9460887fd139",
+        "name": "DITH'S CAT",
+        "symbol": "CYCLOPS",
+        "priceChange": {
+          "m5": 2.22,
+          "h1": 5.33,
+          "h6": 17.14,
+          "h24": 16.88
+        },
+        "marketCap": 2468444,
+        "fdv": 2468444,
+        "volume24h": 46515.95,
+        "url": "https://dexscreener.com/abstract/0x0fc6e222f4e27189801909c610ae6172cb69e5a5"
+      },
+      {
+        "baseAddress": "0x52629ddbf28aa01aa22b994ec9c80273e4eb5b0a",
+        "name": "RETSBA",
+        "symbol": "RETSBA",
+        "priceChange": {
+          "m5": -0.2,
+          "h1": 1.13,
+          "h6": 7.85,
+          "h24": 11.02
+        },
+        "marketCap": 5284610,
+        "fdv": 5488844,
+        "volume24h": 40104.94,
+        "url": "https://dexscreener.com/abstract/0x26e7f241fc81bb168f9f81401184cde74dcc8f31"
+      },
+      {
+        "baseAddress": "0x1c26da604221466976beeb509698152ba8a3a13f",
+        "name": "Grind",
+        "symbol": "GRIND",
+        "priceChange": {
+          "m5": 0.16,
+          "h1": 0.96,
+          "h6": 8.49,
+          "h24": 10.31
+        },
+        "marketCap": 5313698,
+        "fdv": 5313698,
+        "volume24h": 28651,
+        "url": "https://dexscreener.com/abstract/0xf973bac8b0cabf7d33b6e367ca1d581cee2d52ae"
+      },
+      {
+        "baseAddress": "0x3bb6d7504d5c4b251799e5959f8336eae6129db1",
+        "name": "JockDaRock",
+        "symbol": "JOCK",
+        "priceChange": {
+          "m5": -3.69,
+          "h1": -14.05,
+          "h6": -4.02,
+          "h24": 18.19
+        },
+        "marketCap": 159279,
+        "fdv": 159279,
+        "volume24h": 27368.5,
+        "url": "https://dexscreener.com/abstract/0x6474cc50e4ea28ea147a759c764266decf365c22"
+      }
+    ],
+    "banner": {
+      "holders": null,
+      "fdv": 75032.72,
+      "marketCap": null,
+      "vol24": 7549,
+      "chg24": -2.94,
+      "url": "https://dexscreener.com/abstract/0x8c3d850313eb9621605cd6a1acb2830962426f67:moon"
+    },
+    "tokensTracked": 31
+  },
+  "tokenHistory": {
+    "0x0a2c776e4f9017ca0679e6064d2f99cf397b6457": [
+      {
+        "ts": 1755716820953,
+        "name": "Thank You Abstract God",
+        "symbol": "TYAG",
+        "volume24h": 4421.36,
+        "marketCap": 557601,
+        "fdv": 557601,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.07,
+          "h24": -3.64
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "Thank You Abstract God",
+        "symbol": "TYAG",
+        "volume24h": 4421.36,
+        "marketCap": 557601,
+        "fdv": 557601,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.07,
+          "h24": -3.64
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "Thank You Abstract God",
+        "symbol": "TYAG",
+        "volume24h": 4421.36,
+        "marketCap": 557601,
+        "fdv": 557601,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.07,
+          "h24": -3.64
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "Thank You Abstract God",
+        "symbol": "TYAG",
+        "volume24h": 4421.36,
+        "marketCap": 557601,
+        "fdv": 557601,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.07,
+          "h24": -3.64
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "Thank You Abstract God",
+        "symbol": "TYAG",
+        "volume24h": 4421.36,
+        "marketCap": 557601,
+        "fdv": 557601,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.07,
+          "h24": -3.64
+        }
+      }
+    ],
+    "0x14f9db13bd5cffe790df5966bcc1dca363f94591": [
+      {
+        "ts": 1755716681577,
+        "name": "abstract season",
+        "symbol": "ABSZN",
+        "volume24h": 6.13,
+        "marketCap": 243058,
+        "fdv": 243058,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755716724771,
+        "name": "abstract season",
+        "symbol": "ABSZN",
+        "volume24h": 6.13,
+        "marketCap": 243058,
+        "fdv": 243058,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755716820953,
+        "name": "abstract season",
+        "symbol": "ABSZN",
+        "volume24h": 6.13,
+        "marketCap": 243058,
+        "fdv": 243058,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "abstract season",
+        "symbol": "ABSZN",
+        "volume24h": 6.13,
+        "marketCap": 243058,
+        "fdv": 243058,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "abstract season",
+        "symbol": "ABSZN",
+        "volume24h": 6.13,
+        "marketCap": 243058,
+        "fdv": 243058,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      }
+    ],
+    "0x67c778b5e5705aaa46707f3f16e498beef627b0b": [
+      {
+        "ts": 1755716820953,
+        "name": "ABSTRACT PANDA",
+        "symbol": "PANDA",
+        "volume24h": 4695.67,
+        "marketCap": 327784,
+        "fdv": 327784,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.16,
+          "h6": 2.23,
+          "h24": 5.28
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "ABSTRACT PANDA",
+        "symbol": "PANDA",
+        "volume24h": 4695.67,
+        "marketCap": 327784,
+        "fdv": 327784,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.16,
+          "h6": 2.23,
+          "h24": 5.28
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "ABSTRACT PANDA",
+        "symbol": "PANDA",
+        "volume24h": 4695.67,
+        "marketCap": 327784,
+        "fdv": 327784,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.16,
+          "h6": 2.23,
+          "h24": 5.28
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "ABSTRACT PANDA",
+        "symbol": "PANDA",
+        "volume24h": 4695.67,
+        "marketCap": 327784,
+        "fdv": 327784,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 2.23,
+          "h24": 5.28
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "ABSTRACT PANDA",
+        "symbol": "PANDA",
+        "volume24h": 4695.67,
+        "marketCap": 327784,
+        "fdv": 327784,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 2.23,
+          "h24": 5.28
+        }
+      }
+    ],
+    "0xa8726bd058bea1973b61a9bc2a5e0e605b797307": [
+      {
+        "ts": 1755716820953,
+        "name": "Abstract Liquid Staked Token",
+        "symbol": "absETH",
+        "volume24h": 25198.33,
+        "marketCap": 1215609,
+        "fdv": 1215609,
+        "priceChange": {
+          "m5": null,
+          "h1": -1.19,
+          "h6": 1.74,
+          "h24": 3.47
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "Abstract Liquid Staked Token",
+        "symbol": "absETH",
+        "volume24h": 25198.33,
+        "marketCap": 1215609,
+        "fdv": 1215609,
+        "priceChange": {
+          "m5": null,
+          "h1": -1.19,
+          "h6": 1.74,
+          "h24": 3.47
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "Abstract Liquid Staked Token",
+        "symbol": "absETH",
+        "volume24h": 25199.170000000002,
+        "marketCap": 1215609,
+        "fdv": 1215609,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 1.74,
+          "h24": 3.47
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "Abstract Liquid Staked Token",
+        "symbol": "absETH",
+        "volume24h": 25215.47,
+        "marketCap": 1215609,
+        "fdv": 1215609,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 1.74,
+          "h24": 3.47
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "Abstract Liquid Staked Token",
+        "symbol": "absETH",
+        "volume24h": 25215.47,
+        "marketCap": 1215609,
+        "fdv": 1215609,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 1.74,
+          "h24": 3.38
+        }
+      }
+    ],
+    "0xb38f3b7ac44a778b9389fc4a0e8cd578950e868f": [
+      {
+        "ts": 1755716820953,
+        "name": "LUNA - The Abstract Dog",
+        "symbol": "LUNA",
+        "volume24h": 22.3,
+        "marketCap": 20619,
+        "fdv": 20619,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "LUNA - The Abstract Dog",
+        "symbol": "LUNA",
+        "volume24h": 22.3,
+        "marketCap": 20619,
+        "fdv": 20619,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "LUNA - The Abstract Dog",
+        "symbol": "LUNA",
+        "volume24h": 22.3,
+        "marketCap": 20619,
+        "fdv": 20619,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "LUNA - The Abstract Dog",
+        "symbol": "LUNA",
+        "volume24h": 22.3,
+        "marketCap": 20619,
+        "fdv": 20619,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "LUNA - The Abstract Dog",
+        "symbol": "LUNA",
+        "volume24h": 22.3,
+        "marketCap": 20619,
+        "fdv": 20619,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      }
+    ],
+    "0x9c1bfb83f5ebdcf199ddd6742a45204e77f58d6f": [
+      {
+        "ts": 1755716820953,
+        "name": "Abstract Fartcoin",
+        "symbol": "ABSHOLE",
+        "volume24h": 110.49,
+        "marketCap": 15097,
+        "fdv": 15097,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": -1.06,
+          "h24": 1.02
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "Abstract Fartcoin",
+        "symbol": "ABSHOLE",
+        "volume24h": 110.49,
+        "marketCap": 15097,
+        "fdv": 15097,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": -1.06,
+          "h24": 1.02
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "Abstract Fartcoin",
+        "symbol": "ABSHOLE",
+        "volume24h": 110.49,
+        "marketCap": 15097,
+        "fdv": 15097,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": -1.06,
+          "h24": 1.02
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "Abstract Fartcoin",
+        "symbol": "ABSHOLE",
+        "volume24h": 110.49,
+        "marketCap": 15097,
+        "fdv": 15097,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": -1.06,
+          "h24": 1.02
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "Abstract Fartcoin",
+        "symbol": "ABSHOLE",
+        "volume24h": 110.49,
+        "marketCap": 15097,
+        "fdv": 15097,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": -1.06,
+          "h24": 1.02
+        }
+      }
+    ],
+    "0xc287428840617c660888f27b9d02bbac97049add": [
+      {
+        "ts": 1755716820953,
+        "name": "Book Of Abstract",
+        "symbol": "BOA",
+        "volume24h": 10817.53,
+        "marketCap": 5411,
+        "fdv": 5411,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.04,
+          "h24": -5.66
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "Book Of Abstract",
+        "symbol": "BOA",
+        "volume24h": 10817.53,
+        "marketCap": 5411,
+        "fdv": 5411,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.04,
+          "h24": -5.66
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "Book Of Abstract",
+        "symbol": "BOA",
+        "volume24h": 10817.53,
+        "marketCap": 5411,
+        "fdv": 5411,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.04,
+          "h24": -5.66
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "Book Of Abstract",
+        "symbol": "BOA",
+        "volume24h": 10817.53,
+        "marketCap": 5411,
+        "fdv": 5411,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.04,
+          "h24": -5.66
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "Book Of Abstract",
+        "symbol": "BOA",
+        "volume24h": 10817.53,
+        "marketCap": 5411,
+        "fdv": 5411,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3.04,
+          "h24": -5.66
+        }
+      }
+    ],
+    "0x16a50c4c849eb211e10e103e32c8d79f9072f5b9": [
+      {
+        "ts": 1755648236788,
+        "name": "Book of Abstract",
+        "symbol": "BOA",
+        "priceChange24h": -1.64,
+        "volume24h": 44.69,
+        "marketCap": 6263
+      },
+      {
+        "ts": 1755648282316,
+        "name": "Book of Abstract",
+        "symbol": "BOA",
+        "priceChange24h": -1.64,
+        "volume24h": 44.69,
+        "marketCap": 6263
+      },
+      {
+        "ts": 1755648298481,
+        "name": "Book of Abstract",
+        "symbol": "BOA",
+        "priceChange24h": -1.64,
+        "volume24h": 44.69,
+        "marketCap": 6263
+      },
+      {
+        "ts": 1755648327250,
+        "name": "Book of Abstract",
+        "symbol": "BOA",
+        "priceChange24h": -1.64,
+        "volume24h": 44.69,
+        "marketCap": 6263
+      },
+      {
+        "ts": 1755648679437,
+        "name": "Book of Abstract",
+        "symbol": "BOA",
+        "priceChange24h": 0,
+        "volume24h": 44.68,
+        "fdv": 6263,
+        "marketCap": 6263
+      }
+    ],
+    "0x3f3d86f0f9a52c5e82b3a21154582b9f492d6f4a": [
+      {
+        "ts": 1755716820953,
+        "name": "Abstract | Degen",
+        "symbol": "DEGEN",
+        "volume24h": 61.6,
+        "marketCap": 6043,
+        "fdv": 6043,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "Abstract | Degen",
+        "symbol": "DEGEN",
+        "volume24h": 61.6,
+        "marketCap": 6043,
+        "fdv": 6043,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "Abstract | Degen",
+        "symbol": "DEGEN",
+        "volume24h": 61.6,
+        "marketCap": 6043,
+        "fdv": 6043,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "Abstract | Degen",
+        "symbol": "DEGEN",
+        "volume24h": 61.6,
+        "marketCap": 6043,
+        "fdv": 6043,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "Abstract | Degen",
+        "symbol": "DEGEN",
+        "volume24h": 61.6,
+        "marketCap": 6043,
+        "fdv": 6043,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        }
+      }
+    ],
+    "0x9af27bd4899e33e698fd19301bcbc7936a61c74a": [
+      {
+        "ts": 1755716820953,
+        "name": "ABSTRACT GOD",
+        "symbol": "ABSGOD",
+        "volume24h": 78.2,
+        "marketCap": 6403,
+        "fdv": 6403,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": -2.06
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "ABSTRACT GOD",
+        "symbol": "ABSGOD",
+        "volume24h": 78.2,
+        "marketCap": 6403,
+        "fdv": 6403,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": -2.06
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "ABSTRACT GOD",
+        "symbol": "ABSGOD",
+        "volume24h": 78.2,
+        "marketCap": 6403,
+        "fdv": 6403,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": -2.06
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "ABSTRACT GOD",
+        "symbol": "ABSGOD",
+        "volume24h": 78.2,
+        "marketCap": 6403,
+        "fdv": 6403,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": -2.06
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "ABSTRACT GOD",
+        "symbol": "ABSGOD",
+        "volume24h": 78.2,
+        "marketCap": 6403,
+        "fdv": 6403,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": -2.06
+        }
+      }
+    ],
+    "0xaf431346ada0230a2babeeb03b6b0d6e3fc965f6": [
+      {
+        "ts": 1755648061669,
+        "name": "Abstract ERA",
+        "symbol": "ERA",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "fdv": 5661,
+        "marketCap": 5661
+      },
+      {
+        "ts": 1755648236788,
+        "name": "Abstract ERA",
+        "symbol": "ERA",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "marketCap": 5661
+      },
+      {
+        "ts": 1755648282316,
+        "name": "Abstract ERA",
+        "symbol": "ERA",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "marketCap": 5661
+      },
+      {
+        "ts": 1755648298481,
+        "name": "Abstract ERA",
+        "symbol": "ERA",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "marketCap": 5661
+      },
+      {
+        "ts": 1755648327250,
+        "name": "Abstract ERA",
+        "symbol": "ERA",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "marketCap": 5661
+      }
+    ],
+    "0x43595d683c17ddfa8315821bfc053a08b4d1e48b": [
+      {
+        "ts": 1755648061669,
+        "name": "Abstract God",
+        "symbol": "TYAG",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "fdv": 4472,
+        "marketCap": 4472
+      },
+      {
+        "ts": 1755648236788,
+        "name": "Abstract God",
+        "symbol": "TYAG",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "marketCap": 4472
+      },
+      {
+        "ts": 1755648282316,
+        "name": "Abstract God",
+        "symbol": "TYAG",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "marketCap": 4472
+      },
+      {
+        "ts": 1755648298481,
+        "name": "Abstract God",
+        "symbol": "TYAG",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "marketCap": 4472
+      },
+      {
+        "ts": 1755648327250,
+        "name": "Abstract God",
+        "symbol": "TYAG",
+        "priceChange24h": 0,
+        "volume24h": 0,
+        "marketCap": 4472
+      }
+    ],
+    "0x987cf44f3f5d854ec0703123d7fd003a8b56ebb4": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 7086833,
+        "fdv": 7086833,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.28,
+          "h6": 6.1,
+          "h24": 10.35
+        },
+        "volume24h": 109581.47
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 7096954,
+        "fdv": 7096954,
+        "priceChange": {
+          "m5": 0.14,
+          "h1": 1.42,
+          "h6": 6.98,
+          "h24": 10.55
+        },
+        "volume24h": 109542.39
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 7096954,
+        "fdv": 7096954,
+        "priceChange": {
+          "m5": 0.14,
+          "h1": 1.42,
+          "h6": 7.32,
+          "h24": 10.65
+        },
+        "volume24h": 109541.48
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 7113891,
+        "fdv": 7113891,
+        "priceChange": {
+          "m5": 0.11,
+          "h1": 1.08,
+          "h6": 11.5,
+          "h24": 10.59
+        },
+        "volume24h": 109435.11
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 7097524,
+        "fdv": 7097524,
+        "priceChange": {
+          "m5": -0.23,
+          "h1": 0.85,
+          "h6": 11.22,
+          "h24": 10.62
+        },
+        "volume24h": 109550.06
+      }
+    ],
+    "0xc325b7e2736a5202bd860f5974d0aa375e57ede5": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 28871401,
+        "fdv": 28871401,
+        "priceChange": {
+          "m5": 0.35,
+          "h1": -0.72,
+          "h6": 2.95,
+          "h24": 2.59
+        },
+        "volume24h": 188160
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 28950899,
+        "fdv": 28950899,
+        "priceChange": {
+          "m5": 0.34,
+          "h1": -0.6,
+          "h6": 3.32,
+          "h24": 2.85
+        },
+        "volume24h": 188410.55
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 28950899,
+        "fdv": 28950899,
+        "priceChange": {
+          "m5": 0.34,
+          "h1": -0.6,
+          "h6": 3.51,
+          "h24": 2.93
+        },
+        "volume24h": 188391.52
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 28867531,
+        "fdv": 28867531,
+        "priceChange": {
+          "m5": -0.39,
+          "h1": -1.6,
+          "h6": 3.7,
+          "h24": 2.35
+        },
+        "volume24h": 188525.06
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 28883159,
+        "fdv": 28883159,
+        "priceChange": {
+          "m5": -0.2,
+          "h1": -1.54,
+          "h6": 4.1,
+          "h24": 2.59
+        },
+        "volume24h": 188716.43
+      }
+    ],
+    "0xdf70075737e9f96b078ab4461eee3e055e061223": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 11858142,
+        "fdv": 11858142,
+        "priceChange": {
+          "m5": -0.28,
+          "h1": -0.76,
+          "h6": 5.87,
+          "h24": 9.63
+        },
+        "volume24h": 412369.39
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 11869581,
+        "fdv": 11869581,
+        "priceChange": {
+          "m5": -0.4,
+          "h1": -0.67,
+          "h6": 6.1,
+          "h24": 9.93
+        },
+        "volume24h": 412378.51
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 11869581,
+        "fdv": 11869581,
+        "priceChange": {
+          "m5": 0.04,
+          "h1": -0.9,
+          "h6": 6.1,
+          "h24": 9.93
+        },
+        "volume24h": 412378.51
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 11878098,
+        "fdv": 11878098,
+        "priceChange": {
+          "m5": -0.05,
+          "h1": 0.4,
+          "h6": 6.61,
+          "h24": 9.69
+        },
+        "volume24h": 421868.57
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 11796952,
+        "fdv": 11796952,
+        "priceChange": {
+          "m5": -0.68,
+          "h1": -0.39,
+          "h6": 5.59,
+          "h24": 8.94
+        },
+        "volume24h": 425750.08
+      }
+    ],
+    "0x85ca16fd0e81659e0b8be337294149e722528731": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 5130906,
+        "fdv": 5130906,
+        "priceChange": {
+          "m5": 0.22,
+          "h1": 9.37,
+          "h6": 15.04,
+          "h24": 17.15
+        },
+        "volume24h": 168040.4
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 5130891,
+        "fdv": 5130891,
+        "priceChange": {
+          "m5": null,
+          "h1": 6.88,
+          "h6": 15.2,
+          "h24": 17.1
+        },
+        "volume24h": 168042.16
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 5130891,
+        "fdv": 5130891,
+        "priceChange": {
+          "m5": null,
+          "h1": 6.75,
+          "h6": 15.57,
+          "h24": 17.19
+        },
+        "volume24h": 168023.49
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 5171737,
+        "fdv": 5171737,
+        "priceChange": {
+          "m5": 0.24,
+          "h1": 4.89,
+          "h6": 16.17,
+          "h24": 17.88
+        },
+        "volume24h": 168967.39
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 5184062,
+        "fdv": 5184062,
+        "priceChange": {
+          "m5": 0.48,
+          "h1": 5.3,
+          "h6": 16.44,
+          "h24": 18.42
+        },
+        "volume24h": 169323.54
+      }
+    ],
+    "0xf800a81b454c666390cf7b61462c9b18de23ada8": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 2084293,
+        "fdv": 2084293,
+        "priceChange": {
+          "m5": null,
+          "h1": 9.27,
+          "h6": 13.93,
+          "h24": 29.57
+        },
+        "volume24h": 94816.52
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 2080085,
+        "fdv": 2080085,
+        "priceChange": {
+          "m5": -0.2,
+          "h1": 7.39,
+          "h6": 13.7,
+          "h24": 29.31
+        },
+        "volume24h": 95034.77
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 2080085,
+        "fdv": 2080085,
+        "priceChange": {
+          "m5": -0.2,
+          "h1": 7.39,
+          "h6": 13.7,
+          "h24": 29.31
+        },
+        "volume24h": 95034.77
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 2081249,
+        "fdv": 2081249,
+        "priceChange": {
+          "m5": null,
+          "h1": 7.74,
+          "h6": 13.76,
+          "h24": 29.38
+        },
+        "volume24h": 95140.55
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 2081249,
+        "fdv": 2081249,
+        "priceChange": {
+          "m5": null,
+          "h1": 7.74,
+          "h6": 13.76,
+          "h24": 29.38
+        },
+        "volume24h": 95140.55
+      }
+    ],
+    "0x2cc3b5e06fd8b0c1ae99d50b11c4dda7686c83c3": [
+      {
+        "ts": 1755716820953,
+        "name": "Abstract Pepe",
+        "symbol": "ABSPEPE",
+        "volume24h": 80.6,
+        "marketCap": 20024,
+        "fdv": 20024,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": 4.61
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "Abstract Pepe",
+        "symbol": "ABSPEPE",
+        "volume24h": 80.6,
+        "marketCap": 20024,
+        "fdv": 20024,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": 4.61
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "Abstract Pepe",
+        "symbol": "ABSPEPE",
+        "volume24h": 80.6,
+        "marketCap": 20024,
+        "fdv": 20024,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": 4.61
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "Abstract Pepe",
+        "symbol": "ABSPEPE",
+        "volume24h": 80.6,
+        "marketCap": 20024,
+        "fdv": 20024,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": 4.61
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "Abstract Pepe",
+        "symbol": "ABSPEPE",
+        "volume24h": 80.6,
+        "marketCap": 20024,
+        "fdv": 20024,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": 4.61
+        }
+      }
+    ],
+    "0x8643c7dde9780025343200a3195dbb02184dad80": [
+      {
+        "ts": 1755716820953,
+        "name": "RossTheAbstractPainter",
+        "symbol": "RAP",
+        "volume24h": 75.28,
+        "marketCap": 30523,
+        "fdv": 30523,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3688,
+          "h24": 3688
+        }
+      },
+      {
+        "ts": 1755716829557,
+        "name": "RossTheAbstractPainter",
+        "symbol": "RAP",
+        "volume24h": 75.28,
+        "marketCap": 30523,
+        "fdv": 30523,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3688,
+          "h24": 3688
+        }
+      },
+      {
+        "ts": 1755716910014,
+        "name": "RossTheAbstractPainter",
+        "symbol": "RAP",
+        "volume24h": 75.28,
+        "marketCap": 30523,
+        "fdv": 30523,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3688,
+          "h24": 3688
+        }
+      },
+      {
+        "ts": 1755717577161,
+        "name": "RossTheAbstractPainter",
+        "symbol": "RAP",
+        "volume24h": 75.28,
+        "marketCap": 30523,
+        "fdv": 30523,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3688,
+          "h24": 3688
+        }
+      },
+      {
+        "ts": 1755717613037,
+        "name": "RossTheAbstractPainter",
+        "symbol": "RAP",
+        "volume24h": 75.28,
+        "marketCap": 30523,
+        "fdv": 30523,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 3688,
+          "h24": 3688
+        }
+      }
+    ],
+    "0x3d72ddd35cadb4e5b22cdb20b36f98077be84284": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 8200670,
+        "fdv": 8200670,
+        "priceChange": {
+          "m5": 0.29,
+          "h1": 1.25,
+          "h6": 6.81,
+          "h24": 19.35
+        },
+        "volume24h": 102674.3
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 8200670,
+        "fdv": 8200670,
+        "priceChange": {
+          "m5": 0.17,
+          "h1": 1.25,
+          "h6": 6.81,
+          "h24": 19.35
+        },
+        "volume24h": 102674.3
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 8200670,
+        "fdv": 8200670,
+        "priceChange": {
+          "m5": 0.14,
+          "h1": 1.3,
+          "h6": 6.09,
+          "h24": 19.35
+        },
+        "volume24h": 102674.3
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 8241169,
+        "fdv": 8241169,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.61,
+          "h6": 6.56,
+          "h24": 19.57
+        },
+        "volume24h": 102537.08
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 8241169,
+        "fdv": 8241169,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.61,
+          "h6": 5.05,
+          "h24": 19.57
+        },
+        "volume24h": 102537.08
+      }
+    ],
+    "0xa9053dc939d74222f7aa0b3a2be407abbfd56c6a": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 92218797,
+        "fdv": 7347027,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.97,
+          "h6": 2.61,
+          "h24": 5.8
+        },
+        "volume24h": 51265.32
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 92218797,
+        "fdv": 7347027,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.97,
+          "h6": 2.61,
+          "h24": 5.8
+        },
+        "volume24h": 51265.32
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 92218797,
+        "fdv": 7347027,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.77,
+          "h6": 3.96,
+          "h24": 5.8
+        },
+        "volume24h": 51265.32
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 92567702,
+        "fdv": 7374825,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.3,
+          "h6": 4.44,
+          "h24": 6.52
+        },
+        "volume24h": 51344.34
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 92567702,
+        "fdv": 7374825,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.3,
+          "h6": 4.44,
+          "h24": 6.52
+        },
+        "volume24h": 51344.34
+      }
+    ],
+    "0x9ebe3a824ca958e4b3da772d2065518f009cba62": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 1964222678,
+        "fdv": 87096443,
+        "priceChange": {
+          "m5": 0.36,
+          "h1": 2.52,
+          "h6": 6.93,
+          "h24": 2.68
+        },
+        "volume24h": 1096146.82
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 1963816366,
+        "fdv": 87082088,
+        "priceChange": {
+          "m5": -0.01,
+          "h1": 2.43,
+          "h6": 6.9,
+          "h24": 2.89
+        },
+        "volume24h": 1092332.22
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 1963816366,
+        "fdv": 87082088,
+        "priceChange": {
+          "m5": -0.02,
+          "h1": 2.58,
+          "h6": 7.23,
+          "h24": 3.07
+        },
+        "volume24h": 1091417.3900000001
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 1975018730,
+        "fdv": 87578838,
+        "priceChange": {
+          "m5": 0.2,
+          "h1": 2.98,
+          "h6": 8.72,
+          "h24": 3.54
+        },
+        "volume24h": 1091227.8
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 1979599531,
+        "fdv": 87781966,
+        "priceChange": {
+          "m5": 0.17,
+          "h1": 3.16,
+          "h6": 9.17,
+          "h24": 3.75
+        },
+        "volume24h": 1095116.45
+      }
+    ],
+    "0x33ee11ce309854a45b65368c078616abcb5c6e3d": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 9291669,
+        "fdv": 9291669,
+        "priceChange": {
+          "m5": null,
+          "h1": -0.3,
+          "h6": 0.15,
+          "h24": -2.9
+        },
+        "volume24h": 12304.71
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 9497944,
+        "fdv": 9497944,
+        "priceChange": {
+          "m5": 2.22,
+          "h1": 1.91,
+          "h6": 2.37,
+          "h24": -1.27
+        },
+        "volume24h": 12588.38
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 9497944,
+        "fdv": 9497944,
+        "priceChange": {
+          "m5": 2.22,
+          "h1": 1.91,
+          "h6": 2.37,
+          "h24": -1.27
+        },
+        "volume24h": 12588.38
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 9309210,
+        "fdv": 9309210,
+        "priceChange": {
+          "m5": -2,
+          "h1": -2,
+          "h6": -4.08,
+          "h24": -1.47
+        },
+        "volume24h": 12579.61
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 9309210,
+        "fdv": 9309210,
+        "priceChange": {
+          "m5": -2,
+          "h1": -3.31,
+          "h6": -3.86,
+          "h24": -1.47
+        },
+        "volume24h": 12579.61
+      }
+    ],
+    "0xea08d82824e871a163fdeb7d7c6000521f1be4dd": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 9316561,
+        "fdv": 9316561,
+        "priceChange": {
+          "m5": 0.67,
+          "h1": 0.85,
+          "h6": 6.28,
+          "h24": -2
+        },
+        "volume24h": 75018.28
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 9334014,
+        "fdv": 9334014,
+        "priceChange": {
+          "m5": 0.4,
+          "h1": 0.92,
+          "h6": 6.43,
+          "h24": -1.79
+        },
+        "volume24h": 75315.14
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 9334014,
+        "fdv": 9334014,
+        "priceChange": {
+          "m5": 0.2,
+          "h1": 0.92,
+          "h6": 6.43,
+          "h24": -1.91
+        },
+        "volume24h": 75164.27
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 9322752,
+        "fdv": 9322752,
+        "priceChange": {
+          "m5": -0.07,
+          "h1": 1.46,
+          "h6": 6.57,
+          "h24": -2.09
+        },
+        "volume24h": 75469.67
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 9322752,
+        "fdv": 9322752,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.46,
+          "h6": 6.68,
+          "h24": -2.09
+        },
+        "volume24h": 75469.67
+      }
+    ],
+    "0xdc70311f4b19774828aa4a57520a7153af5e58a5": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 6754718,
+        "fdv": 6754718,
+        "priceChange": {
+          "m5": -0.04,
+          "h1": 0.86,
+          "h6": 7.92,
+          "h24": 1.68
+        },
+        "volume24h": 77690.64
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 6754718,
+        "fdv": 6754718,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.86,
+          "h6": 7.92,
+          "h24": 1.68
+        },
+        "volume24h": 77690.64
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 6846892,
+        "fdv": 6846892,
+        "priceChange": {
+          "m5": 1.36,
+          "h1": 2.24,
+          "h6": 9.39,
+          "h24": 3.07
+        },
+        "volume24h": 78992.2
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 6844846,
+        "fdv": 6844846,
+        "priceChange": {
+          "m5": null,
+          "h1": 2.21,
+          "h6": 9.09,
+          "h24": 3.04
+        },
+        "volume24h": 79013.82
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 6844846,
+        "fdv": 6844846,
+        "priceChange": {
+          "m5": null,
+          "h1": 2.21,
+          "h6": 8.92,
+          "h24": 3.04
+        },
+        "volume24h": 79013.82
+      }
+    ],
+    "0x52629ddbf28aa01aa22b994ec9c80273e4eb5b0a": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 5280757,
+        "fdv": 5484843,
+        "priceChange": {
+          "m5": 0.28,
+          "h1": 1.11,
+          "h6": 7.3,
+          "h24": 10.82
+        },
+        "volume24h": 40101.79
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 5280757,
+        "fdv": 5484843,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.11,
+          "h6": 7.27,
+          "h24": 10.79
+        },
+        "volume24h": 40100.88
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 5280757,
+        "fdv": 5484843,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.11,
+          "h6": 7.57,
+          "h24": 10.76
+        },
+        "volume24h": 40099.97
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 5284610,
+        "fdv": 5488844,
+        "priceChange": {
+          "m5": -0.2,
+          "h1": 1.18,
+          "h6": 7.85,
+          "h24": 10.77
+        },
+        "volume24h": 40105.85
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 5284610,
+        "fdv": 5488844,
+        "priceChange": {
+          "m5": -0.2,
+          "h1": 1.13,
+          "h6": 7.85,
+          "h24": 11.02
+        },
+        "volume24h": 40104.94
+      }
+    ],
+    "0x1c26da604221466976beeb509698152ba8a3a13f": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 5305173,
+        "fdv": 5305173,
+        "priceChange": {
+          "m5": 0.79,
+          "h1": 1.75,
+          "h6": 8.07,
+          "h24": 9.95
+        },
+        "volume24h": 28635.86
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 5305173,
+        "fdv": 5305173,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.75,
+          "h6": 8.07,
+          "h24": 9.95
+        },
+        "volume24h": 28635.86
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 5305173,
+        "fdv": 5305173,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.75,
+          "h6": 8.07,
+          "h24": 9.95
+        },
+        "volume24h": 28635.86
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 5313698,
+        "fdv": 5313698,
+        "priceChange": {
+          "m5": 0.16,
+          "h1": 0.96,
+          "h6": 8.69,
+          "h24": 10.01
+        },
+        "volume24h": 28654.22
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 5313698,
+        "fdv": 5313698,
+        "priceChange": {
+          "m5": 0.16,
+          "h1": 0.96,
+          "h6": 8.49,
+          "h24": 10.31
+        },
+        "volume24h": 28651
+      }
+    ],
+    "0x1cd6edb761ed1d68c3cc3c5b9b3e9460887fd139": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 2399498,
+        "fdv": 2399498,
+        "priceChange": {
+          "m5": null,
+          "h1": -0.28,
+          "h6": 13.86,
+          "h24": 13.47
+        },
+        "volume24h": 44963.91
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 2411813,
+        "fdv": 2411813,
+        "priceChange": {
+          "m5": 0.51,
+          "h1": 0.23,
+          "h6": 14.45,
+          "h24": 14.05
+        },
+        "volume24h": 44972.59
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 2411813,
+        "fdv": 2411813,
+        "priceChange": {
+          "m5": 0.51,
+          "h1": 0.91,
+          "h6": 14.45,
+          "h24": 14.05
+        },
+        "volume24h": 44972.59
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 2466497,
+        "fdv": 2466497,
+        "priceChange": {
+          "m5": 2.26,
+          "h1": 3.74,
+          "h6": 17.04,
+          "h24": 16.79
+        },
+        "volume24h": 46513.45
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 2468444,
+        "fdv": 2468444,
+        "priceChange": {
+          "m5": 2.22,
+          "h1": 5.33,
+          "h6": 17.14,
+          "h24": 16.88
+        },
+        "volume24h": 46515.95
+      }
+    ],
+    "0xaf31d07af1602dfce07fba81bca5f9570ca83983": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 1848082,
+        "fdv": 1848082,
+        "priceChange": {
+          "m5": 0.27,
+          "h1": 0.74,
+          "h6": 3.69,
+          "h24": 5.22
+        },
+        "volume24h": 102517.56
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 1854238,
+        "fdv": 1854238,
+        "priceChange": {
+          "m5": 0.31,
+          "h1": 0.9,
+          "h6": 4.03,
+          "h24": 5.56
+        },
+        "volume24h": 102491.44
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 1853464,
+        "fdv": 1853464,
+        "priceChange": {
+          "m5": 0.26,
+          "h1": 1.01,
+          "h6": 4.31,
+          "h24": 5.46
+        },
+        "volume24h": 102425.09
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 1813829,
+        "fdv": 1813829,
+        "priceChange": {
+          "m5": -2.25,
+          "h1": -0.94,
+          "h6": 2.01,
+          "h24": 3.08
+        },
+        "volume24h": 103885.82
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 1816672,
+        "fdv": 1816672,
+        "priceChange": {
+          "m5": -0.12,
+          "h1": -0.75,
+          "h6": 2.26,
+          "h24": 3.14
+        },
+        "volume24h": 103944.14
+      }
+    ],
+    "0x75fdef6c412e22bd561f671d7c4d4899859f94ba": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 1596631,
+        "fdv": 1596631,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.67,
+          "h6": 4.97,
+          "h24": 1.11
+        },
+        "volume24h": 18135.27
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 1596631,
+        "fdv": 1596631,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.67,
+          "h6": 4.97,
+          "h24": 1.39
+        },
+        "volume24h": 17996.94
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 1596631,
+        "fdv": 1596631,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.67,
+          "h6": 4.97,
+          "h24": 1.49
+        },
+        "volume24h": 17996.03
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 1601681,
+        "fdv": 1601681,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.99,
+          "h6": 5.3,
+          "h24": 2.58
+        },
+        "volume24h": 17639.79
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 1601681,
+        "fdv": 1601681,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.99,
+          "h6": 5.3,
+          "h24": 2.49
+        },
+        "volume24h": 17638.88
+      }
+    ],
+    "0xe350f81425c1f0168083cc2da194047d3cf7c829": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 1265667,
+        "fdv": 1265667,
+        "priceChange": {
+          "m5": 1.59,
+          "h1": 1.59,
+          "h6": 6.57,
+          "h24": 0.64
+        },
+        "volume24h": 12015.68
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 1265667,
+        "fdv": 1265667,
+        "priceChange": {
+          "m5": 1.59,
+          "h1": 1.59,
+          "h6": 6.57,
+          "h24": 0.64
+        },
+        "volume24h": 12015.68
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 1268735,
+        "fdv": 1268735,
+        "priceChange": {
+          "m5": 0.24,
+          "h1": 1.84,
+          "h6": 6.83,
+          "h24": 0.88
+        },
+        "volume24h": 12020.5
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 1269605,
+        "fdv": 1269605,
+        "priceChange": {
+          "m5": 0.07,
+          "h1": 1.91,
+          "h6": 6.9,
+          "h24": 0.95
+        },
+        "volume24h": 12025.48
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 1269605,
+        "fdv": 1269605,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.91,
+          "h6": 8.08,
+          "h24": 0.95
+        },
+        "volume24h": 12025.48
+      }
+    ],
+    "0xb4cf92868a1cd4115524014d6f1fc480bfe9abf5": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 1028094,
+        "fdv": 1028094,
+        "priceChange": {
+          "m5": -1.25,
+          "h1": -0.91,
+          "h6": -7.32,
+          "h24": -2.29
+        },
+        "volume24h": 21274.33
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 1028094,
+        "fdv": 1028094,
+        "priceChange": {
+          "m5": -0.02,
+          "h1": -0.91,
+          "h6": -7.32,
+          "h24": -2.29
+        },
+        "volume24h": 21274.33
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 1028094,
+        "fdv": 1028094,
+        "priceChange": {
+          "m5": null,
+          "h1": -0.91,
+          "h6": -7.32,
+          "h24": -1.17
+        },
+        "volume24h": 21238.68
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 1031024,
+        "fdv": 1031024,
+        "priceChange": {
+          "m5": 0.29,
+          "h1": -1.46,
+          "h6": -7.06,
+          "h24": -0.89
+        },
+        "volume24h": 21239.16
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 1031024,
+        "fdv": 1031024,
+        "priceChange": {
+          "m5": null,
+          "h1": -1.46,
+          "h6": -7.06,
+          "h24": -0.61
+        },
+        "volume24h": 20341.69
+      }
+    ],
+    "0x9d87bbe3af8942a03c280329d8cc0c4aa50c1ea0": [
+      {
+        "ts": 1755719460841,
+        "marketCap": 969693,
+        "fdv": 969693,
+        "priceChange": {
+          "m5": 0.28,
+          "h1": 0.67,
+          "h6": 5.23,
+          "h24": -2.11
+        },
+        "volume24h": 25566.48
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 969693,
+        "fdv": 969693,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.67,
+          "h6": 5.23,
+          "h24": -2.11
+        },
+        "volume24h": 25566.48
+      },
+      {
+        "ts": 1755719876397,
+        "marketCap": 969693,
+        "fdv": 969693,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.67,
+          "h6": 5.23,
+          "h24": -3.04
+        },
+        "volume24h": 25525.140000000003
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 972052,
+        "fdv": 972052,
+        "priceChange": {
+          "m5": 0.24,
+          "h1": 0.91,
+          "h6": 5.48,
+          "h24": -2.8
+        },
+        "volume24h": 25538.2
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 972052,
+        "fdv": 972052,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.91,
+          "h6": 5.48,
+          "h24": -2.8
+        },
+        "volume24h": 25538.2
+      }
+    ],
+    "0xfe6371682f58b610e7a2da97a0df2cfd45d60cf1": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 633392,
+        "fdv": 633392,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.74,
+          "h6": 11.27,
+          "h24": -0.45
+        },
+        "volume24h": 25822.34
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 633392,
+        "fdv": 633392,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.74,
+          "h6": 11.27,
+          "h24": -0.45
+        },
+        "volume24h": 25822.34
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 633392,
+        "fdv": 633392,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.74,
+          "h6": 11.27,
+          "h24": -0.45
+        },
+        "volume24h": 25822.34
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 633392,
+        "fdv": 633392,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.74,
+          "h6": 11.27,
+          "h24": -0.45
+        },
+        "volume24h": 25822.34
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 633392,
+        "fdv": 633392,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.74,
+          "h6": 11.27,
+          "h24": -0.45
+        },
+        "volume24h": 25822.34
+      }
+    ],
+    "0x817c16910e27880f55ff2c57f206e458549d96e3": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 606612,
+        "fdv": 606612,
+        "priceChange": {
+          "m5": -0.01,
+          "h1": 1.12,
+          "h6": 5.27,
+          "h24": 6.25
+        },
+        "volume24h": 15499.42
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 606612,
+        "fdv": 606612,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.12,
+          "h6": 7.3,
+          "h24": 6.25
+        },
+        "volume24h": 15499.42
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 606612,
+        "fdv": 606612,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.12,
+          "h6": 7.3,
+          "h24": 6.25
+        },
+        "volume24h": 15499.42
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 606612,
+        "fdv": 606612,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.73,
+          "h6": 7.82,
+          "h24": 6.25
+        },
+        "volume24h": 15499.42
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 606612,
+        "fdv": 606612,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.73,
+          "h6": 7.82,
+          "h24": 6.25
+        },
+        "volume24h": 15499.42
+      }
+    ],
+    "0x3f58fedee5b87c5ed1a6acf6cfcd2007bd0d5d1": [
+      {
+        "ts": 1755719285647,
+        "marketCap": null,
+        "fdv": null,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        },
+        "volume24h": 0
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": null,
+        "fdv": null,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        },
+        "volume24h": 0
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": null,
+        "fdv": null,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        },
+        "volume24h": 0
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": null,
+        "fdv": null,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        },
+        "volume24h": 0
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": null,
+        "fdv": null,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": null,
+          "h24": null
+        },
+        "volume24h": 0
+      }
+    ],
+    "0x98dc57db2a2db5bfa58370fc063a2d50a20b2528": [
+      {
+        "ts": 1755719285647,
+        "marketCap": 355678,
+        "fdv": 355678,
+        "priceChange": {
+          "m5": null,
+          "h1": -8.63,
+          "h6": 2.17,
+          "h24": -0.65
+        },
+        "volume24h": 18024.96
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 355678,
+        "fdv": 355678,
+        "priceChange": {
+          "m5": null,
+          "h1": -8.63,
+          "h6": 2.17,
+          "h24": -0.65
+        },
+        "volume24h": 18024.96
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 355678,
+        "fdv": 355678,
+        "priceChange": {
+          "m5": null,
+          "h1": -8.63,
+          "h6": 2.17,
+          "h24": -0.65
+        },
+        "volume24h": 18024.96
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 355678,
+        "fdv": 355678,
+        "priceChange": {
+          "m5": null,
+          "h1": -4.36,
+          "h6": 2.82,
+          "h24": -0.65
+        },
+        "volume24h": 18024.96
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 355678,
+        "fdv": 355678,
+        "priceChange": {
+          "m5": null,
+          "h1": -4.36,
+          "h6": 2.82,
+          "h24": -0.65
+        },
+        "volume24h": 18024.96
+      }
+    ],
+    "0x8c3d850313eb9621605cd6a1acb2830962426f67": [
+      {
+        "ts": 1755719333857,
+        "marketCap": null,
+        "fdv": 75032.72,
+        "priceChange": {
+          "m5": null,
+          "h1": -2.47,
+          "h6": -2.53,
+          "h24": -2.94
+        },
+        "volume24h": 7549
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": null,
+        "fdv": 75032.72,
+        "priceChange": {
+          "m5": null,
+          "h1": -2.47,
+          "h6": -2.53,
+          "h24": -2.94
+        },
+        "volume24h": 7549
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": null,
+        "fdv": 75032.72,
+        "priceChange": {
+          "m5": null,
+          "h1": -2.47,
+          "h6": -2.53,
+          "h24": -2.94
+        },
+        "volume24h": 7549
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": null,
+        "fdv": 75032.72,
+        "priceChange": {
+          "m5": null,
+          "h1": -2.22,
+          "h6": -0.01,
+          "h24": -2.94
+        },
+        "volume24h": 7549
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": null,
+        "fdv": 75032.72,
+        "priceChange": {
+          "m5": null,
+          "h1": -2.22,
+          "h6": -0.01,
+          "h24": -2.94
+        },
+        "volume24h": 7549
+      }
+    ],
+    "0x15c0a28c93e68cbfa911a6b5cbea1315d53f9035": [
+      {
+        "ts": 1755719394103,
+        "marketCap": 225335,
+        "fdv": 225335,
+        "priceChange": {
+          "m5": null,
+          "h1": -2.35,
+          "h6": 4.39,
+          "h24": 42.31
+        },
+        "volume24h": 15708.44
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 225335,
+        "fdv": 225335,
+        "priceChange": {
+          "m5": null,
+          "h1": -2.35,
+          "h6": 4.39,
+          "h24": 42.31
+        },
+        "volume24h": 15708.44
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 225335,
+        "fdv": 225335,
+        "priceChange": {
+          "m5": null,
+          "h1": -2.35,
+          "h6": 4.39,
+          "h24": 42.31
+        },
+        "volume24h": 15708.44
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 225335,
+        "fdv": 225335,
+        "priceChange": {
+          "m5": null,
+          "h1": -4.85,
+          "h6": 4.39,
+          "h24": 44
+        },
+        "volume24h": 15626.15
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 225335,
+        "fdv": 225335,
+        "priceChange": {
+          "m5": null,
+          "h1": -3.53,
+          "h6": 5.73,
+          "h24": 44
+        },
+        "volume24h": 15626.15
+      }
+    ],
+    "0x3bb6d7504d5c4b251799e5959f8336eae6129db1": [
+      {
+        "ts": 1755719423084,
+        "marketCap": 165375,
+        "fdv": 165375,
+        "priceChange": {
+          "m5": null,
+          "h1": -8.76,
+          "h6": -0.35,
+          "h24": 22.71
+        },
+        "volume24h": 26877.38
+      },
+      {
+        "ts": 1755719460841,
+        "marketCap": 165375,
+        "fdv": 165375,
+        "priceChange": {
+          "m5": null,
+          "h1": -8.76,
+          "h6": -0.35,
+          "h24": 22.71
+        },
+        "volume24h": 26877.38
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 165375,
+        "fdv": 165375,
+        "priceChange": {
+          "m5": null,
+          "h1": -9.65,
+          "h6": -0.35,
+          "h24": 22.71
+        },
+        "volume24h": 26877.38
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 165375,
+        "fdv": 165375,
+        "priceChange": {
+          "m5": null,
+          "h1": -10.76,
+          "h6": -0.35,
+          "h24": 22.71
+        },
+        "volume24h": 26877.38
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 159279,
+        "fdv": 159279,
+        "priceChange": {
+          "m5": -3.69,
+          "h1": -14.05,
+          "h6": -4.02,
+          "h24": 18.19
+        },
+        "volume24h": 27368.5
+      }
+    ],
+    "0x434b5a1ecc759e69b7798bb80ae9064551932690": [
+      {
+        "ts": 1755719514470,
+        "marketCap": 158759,
+        "fdv": 158759,
+        "priceChange": {
+          "m5": null,
+          "h1": -1.17,
+          "h6": -3.48,
+          "h24": -15.28
+        },
+        "volume24h": 19749.49
+      },
+      {
+        "ts": 1755719527012,
+        "marketCap": 158759,
+        "fdv": 158759,
+        "priceChange": {
+          "m5": null,
+          "h1": -1.17,
+          "h6": -3.48,
+          "h24": -15.28
+        },
+        "volume24h": 19749.49
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 158759,
+        "fdv": 158759,
+        "priceChange": {
+          "m5": null,
+          "h1": -1.17,
+          "h6": -3.48,
+          "h24": -14.98
+        },
+        "volume24h": 19711.59
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 158759,
+        "fdv": 158759,
+        "priceChange": {
+          "m5": null,
+          "h1": -1.17,
+          "h6": -3.48,
+          "h24": -14.98
+        },
+        "volume24h": 19711.59
+      }
+    ],
+    "0x921b7a3591893f3bb9bc881a4cefe05aafa98323": [
+      {
+        "ts": 1755719586827,
+        "marketCap": 287028,
+        "fdv": 287028,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.53,
+          "h6": 16.2,
+          "h24": 6.59
+        },
+        "volume24h": 14496.21
+      },
+      {
+        "ts": 1755719631914,
+        "marketCap": 287028,
+        "fdv": 287028,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.53,
+          "h6": 16.2,
+          "h24": 6.59
+        },
+        "volume24h": 14496.21
+      },
+      {
+        "ts": 1755720177643,
+        "marketCap": 287028,
+        "fdv": 287028,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.53,
+          "h6": 16.2,
+          "h24": 6.59
+        },
+        "volume24h": 14496.21
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 288023,
+        "fdv": 288023,
+        "priceChange": {
+          "m5": 0.35,
+          "h1": 0.88,
+          "h6": 16.6,
+          "h24": 6.96
+        },
+        "volume24h": 14497.42
+      }
+    ],
+    "0x95d7c69694e66aa5010346f8bd23462f6d9a5ae5": [
+      {
+        "ts": 1755720177867,
+        "marketCap": 926445,
+        "fdv": 926445,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 7.12,
+          "h24": 3.52
+        },
+        "volume24h": 5867.85
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 926445,
+        "fdv": 926445,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 7.12,
+          "h24": 3.52
+        },
+        "volume24h": 5867.85
+      }
+    ],
+    "0xcbfb6dbeb6c06ddcd345781a0adc711a86a77f7c": [
+      {
+        "ts": 1755720195325,
+        "marketCap": 889026,
+        "fdv": 889026,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 2.17,
+          "h24": -4.07
+        },
+        "volume24h": 9544.46
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 901316,
+        "fdv": 901316,
+        "priceChange": {
+          "m5": 1.38,
+          "h1": 1.38,
+          "h6": 3.58,
+          "h24": -2.74
+        },
+        "volume24h": 9563.85
+      }
+    ],
+    "0x3db259921f12a9efcf27794abf096644730bc0d7": [
+      {
+        "ts": 1755720213468,
+        "marketCap": 261023,
+        "fdv": 261023,
+        "priceChange": {
+          "m5": 1.49,
+          "h1": 1.49,
+          "h6": 5.4,
+          "h24": 1.37
+        },
+        "volume24h": 4053.62
+      },
+      {
+        "ts": 1755720306848,
+        "marketCap": 261023,
+        "fdv": 261023,
+        "priceChange": {
+          "m5": 1.49,
+          "h1": 1.49,
+          "h6": 5.4,
+          "h24": 1.37
+        },
+        "volume24h": 4053.62
+      }
+    ],
+    "0x7183334178f2dbb6238eeb926fa8ff81505f2b81": [
+      {
+        "ts": 1755720330832,
+        "marketCap": 184761,
+        "fdv": 184761,
+        "priceChange": {
+          "m5": null,
+          "h1": 1.01,
+          "h6": 21.98,
+          "h24": 33.3
+        },
+        "volume24h": 6841.3
+      }
+    ],
+    "0x431090645c703112ff41b547d50a819e61c22718": [
+      {
+        "ts": 1755720343120,
+        "marketCap": 82130,
+        "fdv": 82130,
+        "priceChange": {
+          "m5": null,
+          "h1": 0.35,
+          "h6": 25.1,
+          "h24": 31.23
+        },
+        "volume24h": 8107.81
+      }
+    ],
+    "0xbcda9ae6a148bc4fb411979ffa883c9d1df08f43": [
+      {
+        "ts": 1755720352031,
+        "marketCap": 201114,
+        "fdv": 201114,
+        "priceChange": {
+          "m5": null,
+          "h1": null,
+          "h6": 4.81,
+          "h24": 20.05
+        },
+        "volume24h": 6352.93
+      }
+    ],
+    "0xd045e0686a784e272e651fc2c08324edabe7403a": [
+      {
+        "ts": 1755720365038,
+        "marketCap": 635565,
+        "fdv": 635565,
+        "priceChange": {
+          "m5": null,
+          "h1": 3.71,
+          "h6": 16.27,
+          "h24": 19.11
+        },
+        "volume24h": 6507.41
+      }
+    ]
+  }
+}
