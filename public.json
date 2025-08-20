@@ -1,0 +1,12 @@
+{
+  "name": "tabs-top-gainers",
+  "version": "1.0.0",
+  "description": "$tABS — Top Gainers (Abstract) with 15‑min scans + JSON snapshots",
+  "main": "server.cjs",
+  "scripts": {
+    "start": "node server.cjs"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
