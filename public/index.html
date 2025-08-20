@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$tABS — Token Platform</title>
+<style>
+  :root{ --abs-green:#07c160; --bg:#0b1f17; --panel:#0f2a20; --muted:#89b6a0; --text:#e8fff3; }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; min-height:100vh; display:flex; flex-direction:column;
+    background: radial-gradient(1200px 600px at 70% -10%, rgba(7,193,96,.15), transparent), var(--bg);
+    color:var(--text);
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main{flex:1 0 auto} footer{flex-shrink:0}
+
+  .mono, table, .hstat b, .tag, .pill, .muted, h2, .tabbtn { font-family:"Liberation Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important; }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:24px}
+  header{position:sticky;top:0;backdrop-filter:blur(8px);background:linear-gradient(180deg,rgba(11,31,23,.9),rgba(11,31,23,.5));border-bottom:1px solid rgba(255,255,255,.06);z-index:20}
+  .brand{display:flex;align-items:center;gap:12px}
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);padding:8px 12px;border-radius:999px;color:var(--muted)}
+  .headerbar{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+  .hstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;min-width:520px}
+  .hstat{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 10px;min-width:120px}
+  .hstat small{display:block;color:var(--muted);font-size:.75rem}
+  .hstat b{font-size:1rem}
+  .delta-pos{color:#38e08a;font-weight:800}
+  .delta-neg{color:#ff8585;font-weight:800}
+  .tabs-icon{width:48px;height:48px;border-radius:10px;overflow:hidden;box-shadow:0 0 14px rgba(7,193,96,.35)}
+  @media (max-width: 980px) { .hstats{grid-template-columns:repeat(2,1fr); min-width:unset; width:100%} }
+
+  .content{max-width:1200px;margin:0 auto;padding:18px 24px}
+  .panel{background:linear-gradient(135deg, rgba(7,193,96,.12), rgba(7,193,96,.03)); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px}
+
+  .controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+  .controls-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .tabbtn{background:transparent;border:1px solid rgba(255,255,255,.18);color:#d9ffe8;border-radius:10px;padding:8px 12px;cursor:pointer}
+  .tabbtn.active{background:var(--abs-green);color:#062412;border-color:transparent;box-shadow:0 6px 20px rgba(7,193,96,.35)}
+  .back{display:none}
+  .back.show{display:inline-flex}
+  .btn{background:var(--abs-green);border:none;color:#062412;font-weight:800;padding:10px 14px;border-radius:10px;cursor:pointer;box-shadow:0 6px 20px rgba(7,193,96,.35)}
+  .btn.smol{padding:8px 12px}
+
+  .search{display:flex;gap:10px;min-width:280px}
+  .search input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.06);color:var(--text)}
+
+  table{width:100%;border-collapse:separate;border-spacing:0 10px}
+  thead th{color:var(--muted);font-weight:700;text-align:left;font-size:.9rem;padding:0 12px}
+  tbody tr{background:var(--panel);border:1px solid rgba(255,255,255,.06)}
+  tbody td{padding:12px 12px; vertical-align:middle}
+  tbody tr{border-radius:12px}
+  tbody tr td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
+  tbody tr td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+  .chg-pos{color:#3ee98f;font-weight:800}
+  .chg-neg{color:#ff8585;font-weight:800}
+  .tag{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#d9ffe8;font-size:.75rem}
+  .rowhead{display:flex;align-items:center;gap:10px}
+  .tokicon{width:30px;height:30px;border-radius:8px;object-fit:cover;background:#0a1a14}
+
+  .expander{margin-top:8px;border:1px dashed rgba(255,255,255,.2);border-radius:10px}
+  .expander > button{width:100%;text-align:center;background:transparent;border:none;color:var(--muted);padding:10px;cursor:pointer}
+  .expander .tray{display:none;padding:10px}
+  .expander.open .tray{display:block}
+  .expander.open > button{color:#d9ffe8}
+
+  .below{max-width:1200px;margin:12px auto 0; padding:0 24px 24px}
+  .below-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .box{background:linear-gradient(135deg, rgba(7,193,96,.08), rgba(7,193,96,.02));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;min-height:280px}
+  .box h3{margin:0 0 8px}
+
+  footer{padding:28px 0;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap headerbar">
+      <div class="brand">
+        <img class="tabs-icon" src="https://cdn.dexscreener.com/cms/images/4GoBllwMTEijvbAI?width=64&height=64&fit=crop&quality=95&format=auto" alt="$tABS">
+        <div>
+          <div style="font-weight:800;letter-spacing:.4px">$tABS Analytics</div>
+          <div class="muted mono" id="trackedLine" style="font-size:.85rem">— tokens tracked</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="hstats">
+          <div class="hstat mono"><small>Market Cap</small><b id="tabsCap">$0</b></div>
+          <div class="hstat mono"><small>24h Volume</small><b id="tabsVol">$0</b></div>
+          <div class="hstat mono"><small>Holders</small><b id="tabsHolders">—</b></div>
+          <div class="hstat mono"><small>24h Change</small><b id="tabsChg" class="delta-pos">0%</b></div>
+        </div>
+        <div class="pill mono"><a id="tabsLink" target="_blank" rel="noopener">DexScreener</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="content panel">
+      <div class="controls">
+        <div class="controls-left">
+          <button id="tabGainers" class="tabbtn active">🚀 Top Gainers (24h)</button>
+          <button id="tabVol" class="tabbtn">📈 Top Vol (24h)</button>
+          <button id="backBtn" class="btn smol mono back">Back</button>
+        </div>
+        <div class="search">
+          <input id="search" class="mono" placeholder="Paste a CA for single‑token view, or type to filter…" />
+          <button class="btn mono" id="refresh">Refresh</button>
+        </div>
+      </div>
+
+      <table id="gainers" class="mono">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Token</th>
+            <th>24h %</th>
+            <th>24h Vol</th>
+            <th>Mkt Cap</th>
+          </tr>
+        </thead>
+        <tbody id="top5"></tbody>
+      </table>
+
+      <div class="expander" id="expander">
+        <button class="mono" id="toggleExpand">Show more (+10)</button>
+        <div class="tray">
+          <table class="mono" style="width:100%">
+            <tbody id="rest10"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="below">
+      <div class="below-grid">
+        <div class="box" id="boxLeft">
+          <h3 class="mono">Container A</h3>
+          <div class="muted mono">Coming soon…</div>
+        </div>
+        <div class="box" id="boxRight">
+          <h3 class="mono">Container B</h3>
+          <div class="muted mono">Coming soon…</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap mono">© 2025 $tABS Analytics • Built for Abstract chain degens 🧪</div>
+  </footer>
+
+<script>
+// ===== helpers =====
+const iconCache = {};
+async function getTokenIcon(addr){
+  if(!addr) return null;
+  const a=addr.toLowerCase(); if(iconCache[a]) return iconCache[a];
+  try{
+    const res=await fetch(`https://api.dexscreener.com/tokens/v1/abstract/${a}`);
+    const data=await res.json();
+    if(Array.isArray(data)&&data[0]?.info?.imageUrl){ iconCache[a]=data[0].info.imageUrl; return iconCache[a]; }
+  }catch(e){ console.error("Icon fetch error",a,e); }
+  return null;
+}
+const fmtUSD = (n)=> (n==null||isNaN(n)) ? '$0' : '$'+Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n);
+const td=(v,cls='')=>`<td class="${cls}">${v}</td>`;
+const chg=(x)=>`<span class="${(x??0)>=0?'chg-pos':'chg-neg'}">${(x??0).toFixed(2)}%</span>`;
+function isCA(s){ return /^0x[a-fA-F0-9]{40}$/.test((s||'').trim()); }
+
+// ===== rows/table =====
+async function mkRow(i,r){
+  const icon = await getTokenIcon(r.baseAddress);
+  const head = `<div class="rowhead"><span>#${r.rank ?? (i+1)}</span>${icon?`<img class="tokicon" src="${icon}" alt="">`:``}</div>`;
+  const name = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.name || '—'} <span class="tag">${r.symbol || ''}</span></a>` :
+                       `${r.name || '—'} <span class="tag">${r.symbol || ''}</span>`;
+  return `<tr>
+    ${td(head)}
+    ${td(name)}
+    ${td(chg(r.priceChange?.h24))}
+    ${td(fmtUSD(r.volume24h))}
+    ${td(r.marketCap!=null ? fmtUSD(r.marketCap) : '—')}
+  </tr>`;
+}
+
+async function renderTableRows(list){
+  const q = (document.getElementById('search').value || '').toLowerCase();
+  const rows = (list||[]).filter(r=>{
+    const n=(r.name||'').toLowerCase(), s=(r.symbol||'').toLowerCase();
+    return !q || n.includes(q) || s.includes(q);
+  });
+  const top5 = rows.slice(0,5), rest10 = rows.slice(5,15);
+  document.getElementById('top5').innerHTML   = (await Promise.all(top5.map((r,i)=>mkRow(i,r)))).join('');
+  document.getElementById('rest10').innerHTML = (await Promise.all(rest10.map((r,i)=>mkRow(i+5,r)))).join('');
+  document.getElementById('expander').style.display = rows.length>5 ? '' : 'none';
+}
+
+// ===== header =====
+function renderHeaderStats(b){
+  if(!b) return;
+  const capVal = (typeof b.fdv === 'number' && !isNaN(b.fdv)) ? b.fdv :
+                 (typeof b.marketCap === 'number' ? b.marketCap : 0);
+  const fmt=(n)=>'$'+Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n||0);
+  document.getElementById('tabsCap').textContent = fmt(capVal);
+  document.getElementById('tabsVol').textContent = fmt(b.vol24 || 0);
+  document.getElementById('tabsHolders').textContent = (b.holders!=null)? Intl.NumberFormat('en-US').format(b.holders) : '—';
+  const chgEl = document.getElementById('tabsChg');
+  chgEl.textContent = ((b.chg24 ?? 0).toFixed(2)) + '%';
+  chgEl.className = (b.chg24 ?? 0) >= 0 ? 'delta-pos mono' : 'delta-neg mono';
+  document.getElementById('tabsLink').href = b.url || '#';
+}
+function setTracked(n){
+  document.getElementById('trackedLine').textContent = `${(n||0).toLocaleString('en-US')} tokens tracked`;
+}
+
+// ===== API =====
+async function latest(){ const r=await fetch('/api/snapshot/latest'); const j=await r.json(); return j.snapshot||null; }
+async function refresh(){ const r=await fetch('/api/refresh',{method:'POST'}); const j=await r.json(); if(!j.ok&&!j.snapshot) throw new Error('refresh failed'); return j.snapshot; }
+async function addToken(ca){
+  const r=await fetch('/api/add-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ca})});
+  return r.json();
+}
+
+// ===== state =====
+let snap=null;
+let mode='gainers';
+let single=false;
+
+function applyMode(){ document.getElementById('tabGainers').classList.toggle('active',mode==='gainers'); document.getElementById('tabVol').classList.toggle('active',mode==='vol'); }
+async function renderByMode(){
+  if(!snap) return;
+  const list = mode==='gainers' ? (snap.topGainers||[]) : (snap.topVol||[]);
+  await renderTableRows(list);
+}
+
+// ===== single CA =====
+async function renderSingle(ca){
+  single=true;
+  document.getElementById('backBtn').classList.add('show');
+  document.getElementById('expander').style.display='none';
+  try{
+    const j = await addToken(ca.toLowerCase());
+    if(!j.ok || !j.row){
+      document.getElementById('top5').innerHTML = `<tr><td colspan="5">No data for ${ca}</td></tr>`;
+      document.getElementById('rest10').innerHTML='';
+      return;
+    }
+    const row = j.row;
+    setTracked(j.tokensTracked);
+    document.getElementById('top5').innerHTML = await mkRow(0,row);
+    document.getElementById('rest10').innerHTML = '';
+  }catch(e){
+    document.getElementById('top5').innerHTML = `<tr><td colspan="5">Fetch error for ${ca}</td></tr>`;
+    document.getElementById('rest10').innerHTML='';
+  }
+}
+
+// ===== boot & UI =====
+async function boot(){
+  try{ snap = await refresh(); } catch{ snap = await latest(); }
+  if(snap){
+    renderHeaderStats(snap.banner);
+    setTracked(snap.tokensTracked || 0);
+    applyMode();
+    await renderByMode();
+  }
+}
+
+document.getElementById('tabGainers').onclick = async ()=>{ single=false; mode='gainers'; applyMode(); await renderByMode(); };
+document.getElementById('tabVol').onclick     = async ()=>{ single=false; mode='vol';     applyMode(); await renderByMode(); };
+document.getElementById('toggleExpand').onclick = ()=>{
+  const e=document.getElementById('expander'); e.classList.toggle('open');
+  document.getElementById('toggleExpand').textContent = e.classList.contains('open') ? 'Show less (−10)' : 'Show more (+10)';
+};
+document.getElementById('backBtn').onclick = async ()=>{
+  single=false; document.getElementById('backBtn').classList.remove('show'); await renderByMode();
+};
+document.getElementById('refresh').onclick = async ()=>{
+  const q=(document.getElementById('search').value||'').trim();
+  if(q===''){
+    try{ snap = await refresh(); } catch{ snap = await latest(); }
+    if(snap){
+      renderHeaderStats(snap.banner);
+      setTracked(snap.tokensTracked || 0);
+      if(!single) await renderByMode();
+    }
+  } else if(isCA(q)) {
+    await renderSingle(q);
+  } else {
+    await renderByMode();
+  }
+};
+document.getElementById('search').addEventListener('input', async ()=>{
+  if(single) return;
+  await renderByMode();
+});
+
+boot();
+</script>
+</body>
+</html>
