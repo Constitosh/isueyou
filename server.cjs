@@ -13,6 +13,11 @@ const express = require('express');
 const app = express();
 app.use(express.json({ limit: '2mb' }));
 
+const PUBLIC_DIR = path.join(__dirname, "public");
+console.log("Serving static from:", PUBLIC_DIR);
+
+app.use(express.static('PUBLIC_DIR'));
+
 // ------------------------------- Paths & helpers
 const DATA_DIR = path.join(__dirname, 'data');
 const FILE_TOKENS = path.join(DATA_DIR, 'tokens-lib.json');
@@ -389,7 +394,6 @@ const PORT = process.env.PORT || 3000;
   // Optional: kick off a warm scan on boot
   doFullScan().catch(()=>{});
   startSchedulers();
-  app.listen(PORT, () => {
-    console.log(`$tABS server listening on http://localhost:${PORT}`);
+app.listen(8080, "0.0.0.0", ()=> console.log(`$tABS server listening on http://0.0.0.0:8080`));
   });
 })();
