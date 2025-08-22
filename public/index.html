@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$tABS — Token Platform</title>
+<style>
+  :root{ --abs-green:#07c160; --bg:#0b1f17; --panel:#0f2a20; --muted:#89b6a0; --text:#e8fff3; --danger:#ff6b6b; --info:#5aa7ff; }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; min-height:100vh; display:flex; flex-direction:column;
+    background: radial-gradient(1200px 600px at 70% -10%, rgba(7,193,96,.15), transparent), var(--bg);
+    color:var(--text);
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size:16px;
+  }
+  main{flex:1 0 auto} footer{flex-shrink:0}
+
+  .mono, table, .hstat b, .tag, .pill, .muted, h2, .tabbtn { font-family:"Liberation Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important; }
+  a{color:inherit;text-decoration:none}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:18px 24px}
+  header{position:sticky;top:0;backdrop-filter:blur(8px);background:linear-gradient(180deg,rgba(11,31,23,.9),rgba(11,31,23,.5));border-bottom:1px solid rgba(255,255,255,.06);z-index:20}
+  .brand{display:flex;align-items:center;gap:12px}
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);padding:8px 12px;border-radius:999px;color:var(--muted)}
+  .headerbar{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  .header-right{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+  .hstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;min-width:520px}
+  .hstat{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 10px;min-width:120px}
+  .hstat small{display:block;color:var(--muted);font-size:.75rem}
+  .hstat b{font-size:1rem}
+  .delta-pos{color:#38e08a;font-weight:800}
+  .delta-neg{color:#ff8585;font-weight:800}
+  .tabs-icon{width:48px;height:48px;border-radius:10px;overflow:hidden;box-shadow:0 0 14px rgba(7,193,96,.35)}
+  @media (max-width: 980px) { .hstats{grid-template-columns:repeat(2,1fr); min-width:unset; width:100%} }
+
+  .panel{background:linear-gradient(135deg, rgba(7,193,96,.12), rgba(7,193,96,.03)); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px}
+
+  .controls{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+  .controls-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .center-status{flex:1;text-align:center;min-height:22px}
+  .tabbtn{background:transparent;border:1px solid rgba(255,255,255,.18);color:#d9ffe8;border-radius:10px;padding:8px 12px;cursor:pointer}
+  .tabbtn.active{background:var(--abs-green);color:#062412;border-color:transparent;box-shadow:0 6px 20px rgba(7,193,96,.35)}
+
+  .btn{background:var(--abs-green);border:none;color:#062412;font-weight:800;padding:10px 14px;border-radius:10px;cursor:pointer;box-shadow:0 6px 20px rgba(7,193,96,.35)}
+  .btn.smol{padding:8px 12px}
+  .btn.danger{ background:var(--danger); color:#2b0f10; box-shadow:0 6px 20px rgba(255,107,107,.45) }
+  .btn.info{ background:var(--info); color:#041b33; box-shadow:0 6px 20px rgba(90,167,255,.35) }
+
+  .search{display:flex;gap:10px;min-width:280px}
+  .search input{flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.06);color:var(--text)}
+
+  table{width:100%;border-collapse:separate;border-spacing:0 10px}
+  thead th{color:var(--muted);font-weight:700;text-align:left;font-size:.9rem;padding:0 12px}
+  tbody tr{background:var(--panel);border:1px solid rgba(255,255,255,.06)}
+  tbody td{padding:12px 12px; vertical-align:middle}
+  tbody tr{border-radius:12px}
+  tbody tr td:first-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
+  tbody tr td:last-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+  .chg-pos{color:#3ee98f;font-weight:800}
+  .chg-neg{color:#ff8585;font-weight:800}
+  .tag{padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#d9ffe8;font-size:.75rem}
+  .rowhead{display:flex;align-items:center;gap:10px}
+  .tokicon{width:30px;height:30px;border-radius:8px;object-fit:cover;background:#0a1a14;cursor:pointer}
+
+  .expander{margin-top:8px;border:1px dashed rgba(255,255,255,.2);border-radius:10px}
+  .expander > button{width:100%;text-align:center;background:transparent;border:none;color:var(--muted);padding:10px;cursor:pointer}
+  .expander .tray{display:none;padding:10px;background:transparent}
+  .expander.open .tray{display:block}
+  .expander.open > button{color:#d9ffe8}
+
+  /* A + B grid */
+  .below-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .box{background:linear-gradient(135deg, rgba(7,193,96,.08), rgba(7,193,96,.02));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;min-height:220px;overflow-x:auto}
+  .box h3{margin:0 0 8px}
+  #bubble-canvas{min-height:220px}
+  @media (max-width: 900px) { .below-grid{grid-template-columns:1fr} }
+
+  /* B: status grid responsive (5x5 → 3x? on narrow) */
+  .status-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
+  @media (max-width:900px), (orientation:portrait){ .status-grid{grid-template-columns:repeat(3,1fr)} }
+  .s-pill{display:flex;align-items:center;justify-content:center;border-radius:10px;padding:6px 6px;font-size:.75rem;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+  .s-tag{padding:2px 8px;border-radius:14px;border:1px solid rgba(255,255,255,.18);font-size:.75rem}
+  .s-hold{color:#3ee98f}.s-more{color:#ffd166}.s-part{color:#6cf0ff}.s-sold{color:#ff8585}
+
+  /* Overlays */
+  .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:60}
+  .overlay-card{width:min(860px,92vw);max-height:80vh;overflow:auto;background:var(--panel);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px;position:relative}
+  .overlay-close{position:absolute;top:10px;right:10px;border:none;background:transparent;color:#fff;font-size:18px;cursor:pointer}
+
+  /* Footer: fade kept inside footer only */
+  footer{padding:16px 0 24px;color:var(--muted);text-align:center;background:linear-gradient(to top, rgba(7,193,96,.08), rgba(7,193,96,0))}
+
+  /* A: stat rows with “label ␣ value” look */
+  #aTokenStats{margin-bottom:8px}
+  #aTokenStats .statrow{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:1px dashed rgba(255,255,255,.10)}
+  #aTokenStats .statrow b{font-weight:600}
+  #aTokenStats .statrow span{text-align:right}
+
+  /* small screens adjustments */
+  @media (max-width:700px){
+    body{font-size:15px}
+    .wrap{padding:14px 16px}
+    .panel{padding:12px}
+    .box{padding:12px}
+    .tabbtn{padding:6px 10px;font-size:.9rem}
+    .btn{padding:8px 12px}
+    .btn.smol{padding:7px 10px}
+    .search input{padding:8px 10px}
+    thead th{font-size:.8rem}
+    tbody td{padding:10px 10px}
+    .tokicon{width:26px;height:26px}
+    #bubble-canvas{min-height:180px}
+    #aTokenStats .statrow{padding:5px 6px}
+  }
+  @media (max-width:480px){
+    body{font-size:14px}
+    .headerbar{gap:12px}
+    .hstats{gap:8px}
+    .hstat{padding:6px 8px}
+    .hstat b{font-size:.95rem}
+    .pill{padding:6px 10px}
+    .tabbtn{padding:6px 8px}
+    .btn{padding:7px 10px}
+    .search{min-width:0}
+    .search input{min-width:0;width:100%}
+    table{border-spacing:0 8px}
+    tbody td{padding:8px 8px}
+    #bubble-canvas{min-height:150px}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap headerbar">
+      <div class="brand">
+        <img class="tabs-icon" src="https://cdn.dexscreener.com/cms/images/4GoBllwMTEijvbAI?width=64&height=64&fit=crop&quality=95&format=auto" alt="$tABS">
+        <div>
+          <div style="font-weight:800;letter-spacing:.4px">$tABS Analytics</div>
+          <div class="muted mono" id="trackedLine" style="font-size:.85rem">— tokens tracked</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="hstats">
+          <div class="hstat mono"><small>Market Cap</small><b id="tabsCap">$0</b></div>
+          <div class="hstat mono"><small>24h Volume</small><b id="tabsVol">$0</b></div>
+          <div class="hstat mono"><small>Holders</small><b id="tabsHolders">—</b></div>
+          <div class="hstat mono"><small>24h Change</small><b id="tabsChg" class="delta-pos">0%</b></div>
+        </div>
+        <div class="pill mono"><a id="tabsLink" target="_blank" rel="noopener">DexScreener</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- TOP PANEL -->
+    <section class="wrap">
+      <div class="panel">
+        <div class="controls">
+          <div class="controls-left">
+            <button id="tabGainers" class="tabbtn active">🚀 Top Gainers (24h)</button>
+            <button id="tabVol" class="tabbtn">📈 Top Vol (24h)</button>
+            <button id="clearBtn" class="btn smol mono danger" style="display:none">Clear</button>
+            <button id="reloadBtn" class="btn smol mono info" style="display:none">Reload</button>
+          </div>
+
+          <div id="scanStatus" class="center-status mono muted"></div>
+
+          <div class="search">
+            <input id="search" class="mono" placeholder="Paste a CA for single‑token view, or type to filter…" />
+            <button class="btn mono" id="refresh">Refresh</button>
+          </div>
+        </div>
+
+        <table id="gainers" class="mono">
+          <thead>
+            <tr><th>#</th><th>Token</th><th>24h %</th><th>24h Vol</th><th>Mkt Cap</th></tr>
+          </thead>
+          <tbody id="top5"></tbody>
+        </table>
+
+        <div class="expander" id="expander">
+          <button class="mono" id="toggleExpand">Show more (+10)</button>
+          <div class="tray"><table class="mono" style="width:100%"><tbody id="rest10"></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FULL‑WIDTH PANEL A+B -->
+    <section class="wrap below">
+      <div class="panel">
+        <div class="below-grid">
+          <!-- A -->
+          <div class="box" id="boxLeft">
+            <h3 class="mono" id="aTitle">Token Allocation &amp; Stats <small class="muted mono" id="aSnapshot" style="font-weight:400;margin-left:6px"></small></h3>
+            <div id="aTokenStats"></div>
+            <div id="bubble-canvas"></div>
+            <div class="mono muted" id="a-bubble-note"><span id="bubbleStatusText"></span></div>
+          </div>
+
+          <!-- B -->
+          <div class="box" id="boxRight">
+            <h3 class="mono">Wallets • First 25 vs Top 25</h3>
+            <div id="statusGrid" class="status-grid"></div>
+            <div class="controls-left" style="margin-bottom:8px">
+              <button id="btnFirst25" class="tabbtn active">First 25 unique recipients</button>
+              <button id="btnTop25" class="tabbtn">Top 25 holders</button>
+            </div>
+
+            <div id="buyersPanelB">
+              <table class="mono">
+                <thead>
+                  <tr><th>#</th><th>Address</th><th>First In</th><th>Total In</th><th>Total Out</th><th>Holdings</th><th>Status</th></tr>
+                </thead>
+                <tbody id="buyersTop5"></tbody>
+              </table>
+              <div class="expander" id="buyersExpander" style="margin-top:8px;display:none">
+                <button id="buyersToggle" class="mono">Show more (+20)</button>
+                <div class="tray"><table class="mono" style="width:100%"><tbody id="buyersRest"></tbody></table></div>
+              </div>
+              <div id="buyersHelperText" class="mono muted" style="margin-top:6px">Click Address for ABS scan<br>Hit the row for the I sue you Profiler</div>
+            </div>
+
+            <div id="holdersPanelB" style="display:none">
+              <table class="mono">
+                <thead>
+                  <tr><th>#</th><th>Address</th><th>First In</th><th>Total Holdings</th><th>% of Supply</th></tr>
+                </thead>
+                <tbody id="holdersTop5"></tbody>
+              </table>
+              <div class="expander" id="holdersExpander" style="margin-top:8px;display:none">
+                <button id="holdersToggle" class="mono">Show more (+20)</button>
+                <div class="tray"><table class="mono" style="width:100%"><tbody id="holdersRest"></tbody></table></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Overlays -->
+  <div class="overlay" id="fundersOverlay">
+    <div class="overlay-card">
+      <button id="closeFunders" class="overlay-close">✕</button>
+      <h4 class="mono">I Sue You Profiler — who is the sniper?</h4>
+      <div id="fundersInner"></div>
+    </div>
+  </div>
+  <div class="overlay" id="commonOverlay">
+    <div class="overlay-card">
+      <button id="closeCommon" class="overlay-close">✕</button>
+      <h4 class="mono">Common funders</h4>
+      <div id="commonInner"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="wrap mono">
+      <p style="font-size:0.8rem;color:#777;margin-top:1rem;">
+        by the <a href="https://www.twitter.com/totally_abs" target="_blank" style="color:#00ff9c;text-decoration:none;">totally ABS Team</a> 2025,  
+        All graphics by <a href="https://twitter.com/wa666mr" target="_blank" style="color:#00ff9c;text-decoration:none;">WaWa</a>.
+      </p>
+      <p style="font-size:0.8rem;color:#777;margin-top:0.2rem;">
+        This site uses <a href="https://d3js.org/" target="_blank" style="color:#00ff9c;text-decoration:none;">D3.js</a>,  
+        © 2010–2025 Mike Bostock. Released under the 
+        <a href="https://opensource.org/licenses/BSD-3-Clause" target="_blank" style="color:#00ff9c;text-decoration:none;">BSD 3-Clause License</a>.
+      </p>
+    </div>
+  </footer>
+
+<!-- ===== App bootstrap (namespaced + guarded) ===== -->
+<script defer src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+<script defer src="/abs-tabs-integration.js"></script>
+<script>
+(function(){
+  if (window.TABS_APP) { console.warn('TABS_APP already loaded'); return; }
+
+  const SPECIAL_CA = '0x8C3d850313EB9621605cD6A1ACb2830962426F67'.toLowerCase();
+
+  /* utils */
+  const iconCache = {};
+  async function getTokenIcon(addr){
+    if(!addr) return null;
+    const a=addr.toLowerCase(); if(iconCache[a]) return iconCache[a];
+    try{
+      const res=await fetch(`https://api.dexscreener.com/tokens/v1/abstract/${a}`);
+      const data=await res.json();
+      if(Array.isArray(data)&&data[0]?.info?.imageUrl){ iconCache[a]=data[0].info.imageUrl; return iconCache[a]; }
+    }catch(e){ console.error("Icon fetch error",a,e); }
+    return null;
+  }
+  const fmtUSD=(n)=> (n==null||isNaN(n)) ? '$0' : '$'+Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n);
+  const td=(v,cls='')=>`<td class="${cls}">${v}</td>`;
+  const chg=(x)=>`<span class="${(x??0)>=0?'chg-pos':'chg-neg'}">${(x??0).toFixed(2)}%</span>`;
+  const isCA=(s)=>/^0x[a-fA-F0-9]{40}$/.test((s||'').trim());
+
+  /* render rows */
+  async function mkRow(i,r){
+    const icon = await getTokenIcon(r.baseAddress);
+    const iconHtml = icon ? `<img class="tokicon tokclick" data-ca="${r.baseAddress}" src="${icon}" alt="" title="Single‑token view">` : ``;
+    const head = `<div class="rowhead"><span>#${r.rank ?? (i+1)}</span>${iconHtml}</div>`;
+    const name = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.name || '—'} <span class="tag">${r.symbol || ''}</span></a>` :
+                          `${r.name || '—'} <span class="tag">${r.symbol || ''}</span>`;
+    return `<tr>${td(head)}${td(name)}${td(chg(r.priceChange?.h24))}${td(fmtUSD(r.volume24h))}${td(r.marketCap!=null?fmtUSD(r.marketCap):'—')}</tr>`;
+  }
+  function wireTokenIconClicks(){
+    document.querySelectorAll('.tokclick').forEach(img=>{
+      img.addEventListener('click',(e)=>{ e.preventDefault(); e.stopPropagation(); startSingleFromIcon(img.dataset.ca); });
+    });
+  }
+  async function renderTableRows(list){
+    const q=(document.getElementById('search').value||'').toLowerCase();
+    const rows=(list||[]).filter(r=>{
+      const n=(r.name||'').toLowerCase(), s=(r.symbol||'').toLowerCase();
+      return !q || n.includes(q) || s.includes(q);
+    });
+    const top5=rows.slice(0,5), rest10=rows.slice(5,15);
+    document.getElementById('top5').innerHTML   = (await Promise.all(top5.map((r,i)=>mkRow(i,r)))).join('');
+    document.getElementById('rest10').innerHTML = (await Promise.all(rest10.map((r,i)=>mkRow(i+5,r)))).join('');
+    document.getElementById('expander').style.display = rows.length>5 ? '' : 'none';
+    wireTokenIconClicks();
+  }
+
+  /* header tiles */
+  function renderHeaderStats(b){
+    if(!b) return;
+    const capVal = (typeof b.fdv === 'number' && !isNaN(b.fdv)) ? b.fdv : (typeof b.marketCap === 'number' ? b.marketCap : 0);
+    const fmt=(n)=>'$'+Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n||0);
+    document.getElementById('tabsCap').textContent = fmt(capVal);
+    document.getElementById('tabsVol').textContent = fmt(b.vol24 || 0);
+    const chgEl = document.getElementById('tabsChg');
+    chgEl.textContent = ((b.chg24 ?? 0).toFixed(2)) + '%';
+    chgEl.className = (b.chg24 ?? 0) >= 0 ? 'delta-pos mono' : 'delta-neg mono';
+    document.getElementById('tabsLink').href = b.url || '#';
+  }
+  function setTracked(n){ document.getElementById('trackedLine').textContent = `${(n||0).toLocaleString('en-US')} tokens tracked`; }
+
+  /* API */
+  async function latest(){ const r=await fetch('/api/snapshot/latest'); const j=await r.json(); return j.snapshot||null; }
+  async function refresh(){ const r=await fetch('/api/refresh',{method:'POST'}); const j=await r.json(); return j.snapshot || j; }
+  async function addToken(ca){ const r=await fetch('/api/add-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ca})}); return r.json(); }
+
+  /* state */
+  let snapshot=null, mode='gainers', single=false, currentCA=null;
+  const tabGainersBtn = document.getElementById('tabGainers');
+  const tabVolBtn     = document.getElementById('tabVol');
+  const clearBtn      = document.getElementById('clearBtn');
+  const reloadBtn     = document.getElementById('reloadBtn');
+
+  function applyMode(){ tabGainersBtn.classList.toggle('active',mode==='gainers'); tabVolBtn.classList.toggle('active',mode==='vol'); }
+  async function renderByMode(){ if(!snapshot) return; const list=mode==='gainers'?(snapshot.topGainers||[]):(snapshot.topVol||[]); await renderTableRows(list); }
+
+  function enterSingleTokenMode(){
+    single=true; tabGainersBtn.style.display='none'; tabVolBtn.style.display='none';
+    clearBtn.style.display='inline-flex'; reloadBtn.style.display='inline-flex';
+  }
+  function exitSingleTokenMode(){
+    single=false; currentCA=null; document.getElementById('search').value='';
+    tabGainersBtn.style.display=''; tabVolBtn.style.display='';
+    clearBtn.style.display='none'; reloadBtn.style.display='none';
+    document.getElementById('scanStatus').textContent='';
+  }
+
+  async function renderSingle(ca){
+    enterSingleTokenMode(); currentCA=ca.toLowerCase();
+    document.getElementById('expander').style.display='none';
+    try{
+      const j=await addToken(currentCA);
+      if(!j.ok || !j.row){
+        document.getElementById('top5').innerHTML=`<tr><td colspan="5">No data for ${currentCA}</td></tr>`;
+        document.getElementById('rest10').innerHTML='';
+      }else{
+        setTracked(j.tokensTracked);
+        document.getElementById('top5').innerHTML = await mkRow(0,j.row);
+        document.getElementById('rest10').innerHTML='';
+      }
+    }catch(e){
+      document.getElementById('top5').innerHTML=`<tr><td colspan="5">Fetch error for ${currentCA}</td></tr>`;
+      document.getElementById('rest10').innerHTML='';
+    }
+    // Kick off the deep scan (A+B) — cache-first
+    window.TABS_EXT && window.TABS_EXT.startScan(currentCA);
+  }
+  async function startSingleFromIcon(ca){ document.getElementById('search').value=ca; await renderSingle(ca); }
+
+  async function updateHeaderForSpecialToken(){
+    try{
+      const tokRes=await fetch(`https://api.dexscreener.com/tokens/v1/abstract/${SPECIAL_CA}`);
+      const tokArr=await tokRes.json();
+      const t=Array.isArray(tokArr)&&tokArr.length?tokArr[0]:null;
+
+      let vol24=0;
+      try{
+        const pairsRes=await fetch(`https://api.dexscreener.com/token-pairs/v1/abstract/${SPECIAL_CA}`);
+        const pairs=await pairsRes.json();
+        if(Array.isArray(pairs)){ for(const p of pairs){ const v=Number(p?.volume?.h24||0); if(isFinite(v)) vol24+=v; } }
+      }catch{}
+
+      const fdv=Number(t?.fdv ?? null), cap=Number(t?.marketCap ?? null);
+      const capVal=Number.isFinite(fdv)?fdv:(Number.isFinite(cap)?cap:0);
+      const chg24=Number(t?.priceChange?.h24 ?? 0);
+      const link=t?.url || '#';
+
+      const fmt=(n)=>'$'+Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n||0);
+      document.getElementById('tabsCap').textContent = fmt(capVal);
+      document.getElementById('tabsVol').textContent = fmt(vol24 || Number(t?.volume?.h24 || 0));
+      const chgEl=document.getElementById('tabsChg');
+      chgEl.textContent=(isFinite(chg24)?chg24:0).toFixed(2)+'%';
+      chgEl.className=(chg24>=0?'delta-pos mono':'delta-neg mono');
+      document.getElementById('tabsLink').href=link;
+    }catch(e){ console.warn('Header override failed:',e); }
+  }
+
+  async function boot(){
+    try{ snapshot = await refresh(); } catch{ snapshot = await latest(); }
+    if(snapshot){
+      renderHeaderStats(snapshot.banner);
+      await updateHeaderForSpecialToken();
+      setTracked(snapshot.tokensTracked||0);
+      applyMode(); await renderByMode();
+    }
+  }
+
+  // Controls
+  tabGainersBtn.onclick=async()=>{ if(single) return; mode='gainers'; applyMode(); await renderByMode(); };
+  tabVolBtn.onclick    =async()=>{ if(single) return; mode='vol';     applyMode(); await renderByMode(); };
+  clearBtn.onclick = async ()=>{ exitSingleTokenMode(); window.TABS_EXT && window.TABS_EXT.reset(); mode='gainers'; applyMode(); await renderByMode(); document.getElementById('expander').style.display=''; };
+  reloadBtn.onclick=async()=>{ if(!currentCA) return; window.TABS_EXT && window.TABS_EXT.startScan(currentCA,{force:true}); };
+  document.getElementById('toggleExpand').onclick=()=>{
+    const e=document.getElementById('expander'); e.classList.toggle('open');
+    document.getElementById('toggleExpand').textContent = e.classList.contains('open') ? 'Show less (−10)' : 'Show more (+10)';
+  };
+  document.getElementById('refresh').onclick=async()=>{
+    const q=(document.getElementById('search').value||'').trim();
+    if(q===''){
+      try{ snapshot = await refresh(); } catch{ snapshot = await latest(); }
+      if(snapshot){
+        renderHeaderStats(snapshot.banner); await updateHeaderForSpecialToken(); setTracked(snapshot.tokensTracked||0);
+        if(!single){ await renderByMode(); document.getElementById('expander').style.display=''; }
+      }
+    } else if(isCA(q)) {
+      await renderSingle(q);
+    } else {
+      if(!single) await renderByMode();
+    }
+  };
+  document.getElementById('search').addEventListener('input', async ()=>{ if(single) return; await renderByMode(); });
+
+  // expose for icon click handler
+  window.TABS_APP = { boot, startSingleFromIcon };
+})();
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.__ABS_BOOTED__) return; window.__ABS_BOOTED__ = true;
+  window.TABS_EXT?.init();
+  window.TABS_APP?.boot();
+});
+</script>
+</body>
+</html>
