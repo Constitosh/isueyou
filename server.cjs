@@ -12,6 +12,9 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, "public")));
+
+
 // ---------- config & files ----------
 const PORT = process.env.PORT || 8080;
 const DATA_DIR   = path.resolve("data");
