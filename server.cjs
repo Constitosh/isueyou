@@ -10,7 +10,11 @@ const path = require("path");
 const express = require("express");
 
 const app = express();
-app.use(express.static('public'));
+
+const PUBLIC_DIR = path.join(__dirname, "public");
+console.log("Serving static from:", PUBLIC_DIR);
+
+app.use(express.static('PUBLIC_DIR'));
 app.use(express.json());
 
 // ---------- config & files ----------
