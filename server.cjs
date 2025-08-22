@@ -388,7 +388,7 @@ app.post('/api/token-stats/save', async (req, res) => {
 });
 
 // ------------------------------- Boot
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 (async () => {
   await ensureDataFiles();
   // Optional: kick off a warm scan on boot
