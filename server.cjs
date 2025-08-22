@@ -395,4 +395,3 @@ const PORT = process.env.PORT || 8080;
   startSchedulers();
 app.listen(8080, "0.0.0.0", ()=> console.log(`$tABS server listening on http://0.0.0.0:8080`));
   });
-})();
