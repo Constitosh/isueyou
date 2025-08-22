@@ -18,7 +18,6 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.static('PUBLIC_DIR'));
 
 // ------------------------------- Paths & helpers
-const PORT = process.env.PORT || 8080;
 const DATA_DIR = path.join(__dirname, 'data');
 const FILE_TOKENS = path.join(DATA_DIR, 'tokens-lib.json');
 const FILE_SNAPSHOTS = path.join(DATA_DIR, 'snapshots.json');
