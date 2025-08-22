@@ -5,8 +5,8 @@
 // - Keeps last 5 history entries per token
 // - Aggregates 24h volume across ALL known pairs per token
 
-const fs = require("node:fs");
-const path = require("node:path");
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
 
 const app = express();
