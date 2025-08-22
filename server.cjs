@@ -338,5 +338,5 @@ app.use(express.static(path.resolve("public")));
   await refreshLibFromLatestProfiles().catch(()=>{});
   await scanAndSave().catch(()=>{});
 
-  app.listen(PORT, ()=> console.log(`$tABS server listening on http://localhost:${PORT}`));
+  app.listen(8080, "0.0.0.0.", ()=> console.log(`$tABS server listening on http://0.0.0.0:8080`));
 })();
