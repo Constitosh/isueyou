@@ -85,43 +85,37 @@
   .s-tag{padding:2px 8px;border-radius:14px;border:1px solid rgba(255,255,255,.18);font-size:.75rem}
   .s-hold{color:#3ee98f}.s-more{color:#ffd166}.s-part{color:#6cf0ff}.s-sold{color:#ff8585}
 
-  /* Overlays */
+  /* Overlays (funders/common) */
   .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:60}
   .overlay-card{width:min(860px,92vw);max-height:80vh;overflow:auto;background:var(--panel);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px;position:relative}
   .overlay-close{position:absolute;top:10px;right:10px;border:none;background:transparent;color:#fff;font-size:18px;cursor:pointer}
 
-  /* Footer: fade kept inside footer only */
-/* updated */
-footer{
-  position:relative;
-  padding:16px 0 24px;
-  color:var(--muted);
-  text-align:center;
-  background:none;         /* remove gradient from the whole footer */
-  overflow:hidden;         /* keep the pseudo-element contained */
-}
+  /* Footer: fade inside footer only */
+  footer{
+    position:relative;
+    padding:16px 0 24px;
+    color:var(--muted);
+    text-align:center;
+    background:none !important;
+    overflow:hidden;
+  }
+  footer::before{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0;
+    height:84px;
+    background:linear-gradient(to top, rgba(7,193,96,.10), rgba(7,193,96,0));
+    pointer-events:none;
+    z-index:0;
+  }
+  footer .wrap{ position:relative; z-index:1; }
 
-/* draw a small fade *inside* the footer, anchored to the bottom */
-footer::before{
-  content:"";
-  position:absolute;
-  left:0; right:0; bottom:0;
-  height:110px;            /* adjust to taste (only this tall) */
-  pointer-events:none;
-  background:linear-gradient(to top, rgba(7,193,96,.10), rgba(7,193,96,0));
-  z-index:0;
-}
-
-/* keep the text above the fade */
-footer .wrap{ position:relative; z-index:1; }
-
-  /* A: stat rows with “label ␣ value” look */
+  /* A: stat rows look */
   #aTokenStats{margin-bottom:8px}
   #aTokenStats .statrow{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:1px dashed rgba(255,255,255,.10)}
   #aTokenStats .statrow b{font-weight:600}
   #aTokenStats .statrow span{text-align:right}
 
-  /* small screens adjustments */
+  /* small screens */
   @media (max-width:700px){
     body{font-size:15px}
     .wrap{padding:14px 16px}
@@ -153,54 +147,15 @@ footer .wrap{ position:relative; z-index:1; }
     #bubble-canvas{min-height:150px}
   }
 
-/* Boot overlay (initial data load) */
-#bootOverlay{ position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-  background:rgba(0,0,0,.6); z-index:120; }
-#bootOverlay .overlay-card{ width:min(560px,92vw); max-height:70vh; overflow:auto; }
-#bootOverlay h4{ margin:0 0 8px; }
-#bootStatus{ margin-left:6px; }
-#bootRetry{ display:none; margin-top:10px; }
+  /* ========= BOOT OVERLAY + PROGRESS BAR ========= */
+  #bootOverlay{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.6); z-index:120; }
+  #bootOverlay .overlay-card{ width:min(560px,92vw); max-height:70vh; overflow:auto; }
+  #bootOverlay h4{ margin:0 0 8px; }
+  #bootStatus{ margin-left:6px; }
 
-
-  
-  /* --- Footer fade pinned to bottom only (hard override) ------------------- */
-footer{
-  position: relative;
-  background: none !important;      /* kill any previous footer gradient */
-  overflow: hidden;                  /* keep the fade inside the footer */
-}
-
-/* draw a short fade *inside* the footer, glued to the bottom edge */
-footer::before{
-  content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 84px;                      /* adjust the visible fade height */
-  background: linear-gradient(to top, rgba(7,193,96,.10), rgba(7,193,96,0));
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ensure the text sits above the fade */
-footer .wrap{
-  position: relative;
-  z-index: 1;
-}
-
-/* safety: if any older styles added a gradient to a parent wrapper, null it */
-.wrap.footer-wrap,
-.wrap.footer-wrap::before,
-.wrap.footer-wrap::after{
-  background: none !important;
-}
-
-/* optional: if you ever had a fixed/absolute footer by mistake, undo it */
-footer{ position: relative !important; bottom: auto !important; }
-
-
-
-
-  
+  .progress{ width:100%; height:10px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:999px; overflow:hidden; margin-top:10px; }
+  .progress > div{ height:100%; width:0%; background:linear-gradient(90deg, var(--abs-green), #32d896); transition:width .35s ease; }
+  #bootRetry{ display:none; margin-top:10px; }
 </style>
 </head>
 <body>
@@ -329,6 +284,19 @@ footer{ position: relative !important; bottom: auto !important; }
     </div>
   </div>
 
+  <!-- Boot overlay with progress -->
+  <div class="overlay" id="bootOverlay">
+    <div class="overlay-card">
+      <h4 class="mono">Loading latest snapshot…</h4>
+      <div class="banner mono">
+        <span class="spinner"></span>
+        <span id="bootStatus">Starting…</span>
+      </div>
+      <div class="progress"><div id="bootBar"></div></div>
+      <button id="bootRetry" class="btn mono">Retry</button>
+    </div>
+  </div>
+
   <footer>
     <div class="wrap mono">
       <p style="font-size:0.8rem;color:#777;margin-top:1rem;">
@@ -370,23 +338,18 @@ footer{ position: relative !important; bottom: auto !important; }
   const isCA=(s)=>/^0x[a-fA-F0-9]{40}$/.test((s||'').trim());
 
   /* render rows */
-async function mkRow(i,r){
-  const icon = await getTokenIcon(r.baseAddress);
-  const iconHtml = icon ? `<img class="tokicon tokclick" data-ca="${r.baseAddress}" src="${icon}" alt="" title="Single‑token view">` : ``;
-  const head = `<div class="rowhead"><span>#${r.rank ?? (i+1)}</span>${iconHtml}</div>`;
-  const name = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.name || '—'} <span class="tag">${r.symbol || ''}</span></a>`
+  async function mkRow(i,r){
+    const icon = await getTokenIcon(r.baseAddress);
+    const iconHtml = icon ? `<img class="tokicon tokclick" data-ca="${r.baseAddress}" src="${icon}" alt="" title="Single‑token view">` : ``;
+    const head = `<div class="rowhead"><span>#${r.rank ?? (i+1)}</span>${iconHtml}</div>`;
+    const name = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.name || '—'} <span class="tag">${r.symbol || ''}</span></a>`
                      : `${r.name || '—'} <span class="tag">${r.symbol || ''}</span>`;
-  const capVal = (r.marketCap != null && isFinite(r.marketCap)) ? r.marketCap
+    const capVal = (r.marketCap != null && isFinite(r.marketCap)) ? r.marketCap
                  : (r.fdv != null && isFinite(r.fdv)) ? r.fdv
                  : null;
-  return `<tr>${td(head)}${td(name)}${td(chg(r.priceChange?.h24))}${td(fmtUSD(r.volume24h))}${td(capVal!=null ? fmtUSD(capVal) : '—')}</tr>`;
-}
-
-  function wireTokenIconClicks(){
-    document.querySelectorAll('.tokclick').forEach(img=>{
-      img.addEventListener('click',(e)=>{ e.preventDefault(); e.stopPropagation(); startSingleFromIcon(img.dataset.ca); });
-    });
+    return `<tr>${td(head)}${td(name)}${td(chg(r.priceChange?.h24))}${td(fmtUSD(r.volume24h))}${td(capVal!=null ? fmtUSD(capVal) : '—')}</tr>`;
   }
+  function wireTokenIconClicks(){ document.querySelectorAll('.tokclick').forEach(img=>{ img.addEventListener('click',(e)=>{ e.preventDefault(); e.stopPropagation(); startSingleFromIcon(img.dataset.ca); }); }); }
   async function renderTableRows(list){
     const q=(document.getElementById('search').value||'').toLowerCase();
     const rows=(list||[]).filter(r=>{
@@ -490,55 +453,53 @@ async function mkRow(i,r){
     }catch(e){ console.warn('Header override failed:',e); }
   }
 
-async function boot(isRetry=false){
-  // show overlay only on first load (or when user pressed Retry)
-  if (!isRetry) bootShow('Fetching cached snapshot…');
+  /* ---------- BOOT OVERLAY HELPERS ---------- */
+  const bootOv = document.getElementById('bootOverlay');
+  const bootSt = document.getElementById('bootStatus');
+  const bootBar = document.getElementById('bootBar');
+  const bootRetryBtn = document.getElementById('bootRetry');
 
-  try{
-    // Try to render with whatever we already have quickly
-    const latestSnap = await latest().catch(()=>null);
-    if (latestSnap){
-      bootSet('Rendering cached snapshot…');
-      snapshot = latestSnap;
-      renderHeaderStats(snapshot.banner);
-      setTracked(snapshot.tokensTracked || 0);
-      applyMode(); await renderByMode();
-    }
-
-    // In parallel (or fallback if no cache), refresh to get fresh data
-    bootSet('Updating data…');
-    const fresh = await refresh().catch(()=>null);
-    if (fresh){
-      snapshot = fresh;
-      renderHeaderStats(snapshot.banner);
-      setTracked(snapshot.tokensTracked || 0);
-      await renderByMode();
-    }
-
-    // Always override header tiles for $tABS after we have *some* data
-    try { await updateHeaderForSpecialToken(); } catch {}
-
-    bootHide();
-  }catch(e){
-    console.warn('Boot error:', e);
-    bootSet('Could not load data. Check connection or try again.');
-    if (bootRetryBtn) bootRetryBtn.style.display='inline-flex';
+  function bootShow(msg='Loading…', p=5){ if(bootOv) bootOv.style.display='flex'; bootSet(msg,p); }
+  function bootSet(msg, p){ if(bootSt) bootSt.textContent = msg; if(bootBar) bootBar.style.width = Math.max(0, Math.min(100, p||0)) + '%'; }
+  function bootHide(){ if(bootOv) bootOv.style.display='none'; }
+  if (bootRetryBtn){
+    bootRetryBtn.onclick = async ()=>{ bootRetryBtn.style.display='none'; bootShow('Retrying…', 10); await boot(true); };
   }
-}
 
+  async function boot(isRetry=false){
+    bootShow('Fetching cached snapshot…', 10);
+    let hadAnything = false;
 
-  // ---- Boot overlay helpers
-const bootOv = document.getElementById('bootOverlay');
-const bootSt = document.getElementById('bootStatus');
-const bootRetryBtn = document.getElementById('bootRetry');
+    try{
+      const latestSnap = await latest().catch(()=>null);
+      if (latestSnap){
+        snapshot = latestSnap;
+        bootSet('Rendering cached snapshot…', 40);
+        renderHeaderStats(snapshot.banner);
+        setTracked(snapshot.tokensTracked || 0);
+        applyMode(); await renderByMode();
+        hadAnything = true;
+      }
 
-function bootShow(msg='Loading…'){ if(bootOv){ bootOv.style.display='flex'; } if(bootSt){ bootSt.textContent = msg; } }
-function bootSet(msg){ if(bootSt){ bootSt.textContent = msg; } }
-function bootHide(){ if(bootOv){ bootOv.style.display='none'; } }
-if (bootRetryBtn){
-  bootRetryBtn.onclick = async ()=>{ bootRetryBtn.style.display='none'; bootSet('Retrying…'); await boot(true); };
-}
+      bootSet('Updating data…', hadAnything ? 65 : 30);
+      const fresh = await refresh().catch(()=>null);
+      if (fresh){
+        snapshot = fresh;
+        renderHeaderStats(snapshot.banner);
+        setTracked(snapshot.tokensTracked || 0);
+        await renderByMode();
+      }
 
+      bootSet('Finalizing…', 90);
+      try { await updateHeaderForSpecialToken(); } catch {}
+      bootSet('Done', 100);
+      bootHide();
+    }catch(e){
+      console.warn('Boot error:', e);
+      bootSet('Could not load data. Check connection or press Retry.', 100);
+      if (bootRetryBtn) bootRetryBtn.style.display='inline-flex';
+    }
+  }
 
   // Controls
   tabGainersBtn.onclick=async()=>{ if(single) return; mode='gainers'; applyMode(); await renderByMode(); };
@@ -552,11 +513,13 @@ if (bootRetryBtn){
   document.getElementById('refresh').onclick=async()=>{
     const q=(document.getElementById('search').value||'').trim();
     if(q===''){
+      bootShow('Refreshing snapshot…', 15);
       try{ snapshot = await refresh(); } catch{ snapshot = await latest(); }
       if(snapshot){
         renderHeaderStats(snapshot.banner); await updateHeaderForSpecialToken(); setTracked(snapshot.tokensTracked||0);
         if(!single){ await renderByMode(); document.getElementById('expander').style.display=''; }
       }
+      bootHide();
     } else if(isCA(q)) {
       await renderSingle(q);
     } else {
@@ -574,19 +537,5 @@ document.addEventListener('DOMContentLoaded', () => {
   window.TABS_APP?.boot();
 });
 </script>
-<!-- Boot / first-load overlay -->
-<div class="overlay" id="bootOverlay">
-  <div class="overlay-card">
-    <h4 class="mono">Loading latest snapshot…</h4>
-    <div class="banner mono">
-      <span class="spinner"></span>
-      <span id="bootStatus">Starting…</span>
-    </div>
-    <button id="bootRetry" class="btn mono">Retry</button>
-  </div>
-</div>
-
-
-  
 </body>
 </html>
