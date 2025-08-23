@@ -437,15 +437,54 @@ async function mkRow(i,r){
     }catch(e){ console.warn('Header override failed:',e); }
   }
 
-  async function boot(){
-    try{ snapshot = await refresh(); } catch{ snapshot = await latest(); }
-    if(snapshot){
-      renderHeaderStats(snapshot.banner);
-      await updateHeaderForSpecialToken();
-      setTracked(snapshot.tokensTracked||0);
-      applyMode(); await renderByMode();
+
+async function boot(){
+  const scanStatus = document.getElementById('scanStatus');
+
+  // 1) Show cached snapshot instantly
+  try {
+    const latestSnap = await latest(); // GET /api/snapshot/latest
+    if (latestSnap) {
+      snap = latestSnap;
+      renderHeaderStats(snap.banner, snap.bannerSpecial);
+      setTracked(snap.tokensTracked || 0);
+      applyMode();
+      await renderByMode();
+      // give user a hint we're updating in background
+      scanStatus.textContent = 'Updating… fetching fresh stats in the background.';
+    } else {
+      scanStatus.textContent = 'No cached snapshot yet. Building one…';
+    }
+  } catch (e) {
+    console.warn('Failed to load cached snapshot:', e);
+  }
+
+  // 2) Start a background refresh and update UI if newer
+  try {
+    const fresh = await refresh(); // POST /api/refresh
+    if (fresh && (!snap || fresh.ts !== snap.ts)) {
+      snap = fresh;
+      renderHeaderStats(snap.banner, snap.bannerSpecial);
+      setTracked(snap.tokensTracked || 0);
+      applyMode();
+      await renderByMode();
+      scanStatus.textContent = 'Updated just now.';
+      setTimeout(()=> (scanStatus.textContent=''), 2500);
+    } else {
+      // even if ts same, we can quietly clear the status
+      setTimeout(()=> (scanStatus.textContent=''), 1200);
+    }
+  } catch (e) {
+    console.warn('Background refresh failed:', e);
+    // keep the cached UI; show soft error
+    if (scanStatus.textContent === 'Updating… fetching fresh stats in the background.') {
+      scanStatus.textContent = 'Using cached snapshot (refresh failed).';
+      setTimeout(()=> (scanStatus.textContent=''), 2500);
     }
   }
+}
+
+
 
   // Controls
   tabGainersBtn.onclick=async()=>{ if(single) return; mode='gainers'; applyMode(); await renderByMode(); };
@@ -456,20 +495,37 @@ async function mkRow(i,r){
     const e=document.getElementById('expander'); e.classList.toggle('open');
     document.getElementById('toggleExpand').textContent = e.classList.contains('open') ? 'Show less (−10)' : 'Show more (+10)';
   };
-  document.getElementById('refresh').onclick=async()=>{
-    const q=(document.getElementById('search').value||'').trim();
-    if(q===''){
-      try{ snapshot = await refresh(); } catch{ snapshot = await latest(); }
-      if(snapshot){
-        renderHeaderStats(snapshot.banner); await updateHeaderForSpecialToken(); setTracked(snapshot.tokensTracked||0);
-        if(!single){ await renderByMode(); document.getElementById('expander').style.display=''; }
+document.getElementById('refresh').onclick = async ()=>{
+  const q = (document.getElementById('search').value||'').trim();
+  if (q === '') {
+    // List mode: keep current snapshot on screen, fetch fresh in background
+    const scanStatus = document.getElementById('scanStatus');
+    scanStatus.textContent = 'Refreshing snapshot…';
+    try {
+      const fresh = await refresh(); // POST /api/refresh
+      if (fresh && (!snap || fresh.ts !== snap.ts)) {
+        snap = fresh;
+        renderHeaderStats(snap.banner, snap.bannerSpecial);
+        setTracked(snap.tokensTracked || 0);
+        applyMode();
+        await renderByMode();
+        scanStatus.textContent = 'Updated.';
+      } else {
+        scanStatus.textContent = 'Already up to date.';
       }
-    } else if(isCA(q)) {
-      await renderSingle(q);
-    } else {
-      if(!single) await renderByMode();
+    } catch (e) {
+      console.warn('Manual refresh failed:', e);
+      scanStatus.textContent = 'Refresh failed (using cached snapshot).';
+    } finally {
+      setTimeout(()=> (scanStatus.textContent=''), 2500);
     }
-  };
+  } else if (isCA(q)) {
+    // Single‑token mode unchanged
+    await renderSingle(q);
+  } else {
+    if (!single) await renderByMode();
+  }
+};
   document.getElementById('search').addEventListener('input', async ()=>{ if(single) return; await renderByMode(); });
 
   // expose for icon click handler
@@ -480,6 +536,23 @@ document.addEventListener('DOMContentLoaded', () => {
   window.TABS_EXT?.init();
   window.TABS_APP?.boot();
 });
+
+setInterval(async ()=>{
+  try {
+    const latestSnap = await latest(); // GET /api/snapshot/latest
+    if (latestSnap && snap && latestSnap.ts !== snap.ts) {
+      snap = latestSnap;
+      renderHeaderStats(snap.banner, snap.bannerSpecial);
+      setTracked(snap.tokensTracked || 0);
+      applyMode();
+      await renderByMode();
+      const s = document.getElementById('scanStatus');
+      s.textContent = 'Auto‑updated.';
+      setTimeout(()=> (s.textContent=''), 1500);
+    }
+  } catch {}
+}, 30 * 1000); // every 90s; tune as you prefer
+  
 </script>
 </body>
 </html>
