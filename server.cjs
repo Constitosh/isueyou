@@ -1,28 +1,4 @@
-// server.cjs — $tABS backend (Express / Node 18+)
-// Persists: data/tokens-lib.json, data/snapshots.json, data/token-stats.json
-
-const path = require('path');
-const fs = require('fs');
-const express = require('express');
-
-const app = express();
-app.use(express.json({ limit: '2mb' }));
-
-// ---------- Paths ----------
-const ROOT = __dirname;
-const DATA_DIR = path.join(ROOT, 'data');
-const PUBLIC_DIR = path.join(ROOT, 'public');
-
-const TOKENS_LIB_FILE = path.join(DATA_DIR, 'tokens-lib.json');
-const SNAPSHOTS_FILE  = path.join(DATA_DIR, 'snapshots.json');
-const TOKEN_STATS_FILE= path.join(DATA_DIR, 'token-stats.json');
-
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-
-// ---------- JSON helpers ----------
-function readJSON(file, fallback) {
-  try {
-    if (!fs.existsSync(file)) return fallback;
+k;
     const raw = fs.readFileSync(file, 'utf8');
     if (!raw?.trim()) return fallback;
     return JSON.parse(raw);
