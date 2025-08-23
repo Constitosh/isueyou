@@ -20,25 +20,6 @@
   .mono, table, .hstat b, .tag, .pill, .muted, h2, .tabbtn { font-family:"Liberation Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important; }
   a{color:inherit;text-decoration:none}
 
-
-#bubble-canvas {
-  min-height: 520px;   /* was 180px / 220px in your versions */
-  height: 600px;       /* explicit height for desktop */
-}
-@media (max-width: 900px) {
-  #bubble-canvas {
-    height: 320px;     /* shrink for tablets/phones */
-  }
-}
-@media (max-width: 480px) {
-  #bubble-canvas {
-    height: 240px;     /* even smaller on narrow devices */
-  }
-}
-
-
-
-  
   .wrap{max-width:1200px;margin:0 auto;padding:18px 24px}
   header{position:sticky;top:0;backdrop-filter:blur(8px);background:linear-gradient(180deg,rgba(11,31,23,.9),rgba(11,31,23,.5));border-bottom:1px solid rgba(255,255,255,.06);z-index:20}
   .brand{display:flex;align-items:center;gap:12px}
@@ -90,35 +71,34 @@
   .expander.open .tray{display:block}
   .expander.open > button{color:#d9ffe8}
 
-  /* A + B grid */
   .below-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .box{background:linear-gradient(135deg, rgba(7,193,96,.08), rgba(7,193,96,.02));border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;min-height:220px;overflow-x:auto}
   .box h3{margin:0 0 8px}
-  #bubble-canvas{min-height:220px}
-  @media (max-width: 900px) { .below-grid{grid-template-columns:1fr} }
 
-  /* B: status grid responsive (5x5 → 3x? on narrow) */
+  /* Make the bubble canvas taller on desktop */
+  #bubble-canvas{min-height:520px; height:600px}
+  @media (max-width: 900px) { .below-grid{grid-template-columns:1fr} #bubble-canvas{height:320px} }
+  @media (max-width: 480px) { #bubble-canvas{height:240px} }
+
   .status-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px}
   @media (max-width:900px), (orientation:portrait){ .status-grid{grid-template-columns:repeat(3,1fr)} }
   .s-pill{display:flex;align-items:center;justify-content:center;border-radius:10px;padding:6px 6px;font-size:.75rem;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
   .s-tag{padding:2px 8px;border-radius:14px;border:1px solid rgba(255,255,255,.18);font-size:.75rem}
   .s-hold{color:#3ee98f}.s-more{color:#ffd166}.s-part{color:#6cf0ff}.s-sold{color:#ff8585}
 
-  /* Overlays */
   .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6);z-index:60}
   .overlay-card{width:min(860px,92vw);max-height:80vh;overflow:auto;background:var(--panel);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px;position:relative}
   .overlay-close{position:absolute;top:10px;right:10px;border:none;background:transparent;color:#fff;font-size:18px;cursor:pointer}
 
-  /* Footer: fade kept inside footer only */
   footer{padding:16px 0 24px;color:var(--muted);text-align:center;background:linear-gradient(to top, rgba(7,193,96,.08), rgba(7,193,96,0))}
 
-  /* A: stat rows with “label ␣ value” look */
+  /* A-panel stat rows */
   #aTokenStats{margin-bottom:8px}
   #aTokenStats .statrow{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-bottom:1px dashed rgba(255,255,255,.10)}
   #aTokenStats .statrow b{font-weight:600}
   #aTokenStats .statrow span{text-align:right}
 
-  /* small screens adjustments */
+  /* small screens */
   @media (max-width:700px){
     body{font-size:15px}
     .wrap{padding:14px 16px}
@@ -131,7 +111,6 @@
     thead th{font-size:.8rem}
     tbody td{padding:10px 10px}
     .tokicon{width:26px;height:26px}
-    #bubble-canvas{min-height:180px}
     #aTokenStats .statrow{padding:5px 6px}
   }
   @media (max-width:480px){
@@ -147,7 +126,6 @@
     .search input{min-width:0;width:100%}
     table{border-spacing:0 8px}
     tbody td{padding:8px 8px}
-    #bubble-canvas{min-height:150px}
   }
 </style>
 </head>
@@ -291,16 +269,12 @@
     </div>
   </footer>
 
-<!-- ===== App bootstrap (namespaced + guarded) ===== -->
-<script defer src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
-<script defer src="/abs-tabs-integration.js"></script>
+<!-- ===== Page logic ===== -->
 <script>
 (function(){
-  if (window.TABS_APP) { console.warn('TABS_APP already loaded'); return; }
+  const SPECIAL_CA = '0x8c3d850313eb9621605cd6a1acb2830962426f67'.toLowerCase();
 
-  const SPECIAL_CA = '0x8C3d850313EB9621605cD6A1ACb2830962426F67'.toLowerCase();
-
-  /* utils */
+  // utils
   const iconCache = {};
   async function getTokenIcon(addr){
     if(!addr) return null;
@@ -317,18 +291,43 @@
   const chg=(x)=>`<span class="${(x??0)>=0?'chg-pos':'chg-neg'}">${(x??0).toFixed(2)}%</span>`;
   const isCA=(s)=>/^0x[a-fA-F0-9]{40}$/.test((s||'').trim());
 
-  /* render rows */
-async function mkRow(i,r){
-  const icon = await getTokenIcon(r.baseAddress);
-  const iconHtml = icon ? `<img class="tokicon tokclick" data-ca="${r.baseAddress}" src="${icon}" alt="" title="Single‑token view">` : ``;
-  const head = `<div class="rowhead"><span>#${r.rank ?? (i+1)}</span>${iconHtml}</div>`;
-  const name = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.name || '—'} <span class="tag">${r.symbol || ''}</span></a>`
+  // header render: prefer bannerSpecial (tABS) if present
+  function renderHeaderStats(b, special){
+    const fmt=(n)=>'$'+Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n||0);
+    if (special){
+      document.getElementById('tabsCap').textContent = fmt(special.cap || 0);
+      document.getElementById('tabsVol').textContent = fmt(special.vol24 || 0);
+      const chgEl = document.getElementById('tabsChg');
+      const c = Number(special.chg24 || 0);
+      chgEl.textContent = c.toFixed(2) + '%';
+      chgEl.className = c >= 0 ? 'delta-pos mono' : 'delta-neg mono';
+      document.getElementById('tabsLink').href = special.url || '#';
+      return;
+    }
+    if(!b) return;
+    const capVal = (typeof b.fdv === 'number' && !isNaN(b.fdv)) ? b.fdv
+                   : (typeof b.marketCap === 'number' ? b.marketCap : 0);
+    document.getElementById('tabsCap').textContent = fmt(capVal);
+    document.getElementById('tabsVol').textContent = fmt(b.vol24 || 0);
+    const chgEl = document.getElementById('tabsChg');
+    chgEl.textContent = ((b.chg24 ?? 0).toFixed(2)) + '%';
+    chgEl.className = (b.chg24 ?? 0) >= 0 ? 'delta-pos mono' : 'delta-neg mono';
+    document.getElementById('tabsLink').href = b.url || '#';
+  }
+  function setTracked(n){ document.getElementById('trackedLine').textContent = `${(n||0).toLocaleString('en-US')} tokens tracked`; }
+
+  // table rows
+  async function mkRow(i,r){
+    const icon = await getTokenIcon(r.baseAddress);
+    const iconHtml = icon ? `<img class="tokicon tokclick" data-ca="${r.baseAddress}" src="${icon}" alt="" title="Single‑token view">` : ``;
+    const head = `<div class="rowhead"><span>#${r.rank ?? (i+1)}</span>${iconHtml}</div>`;
+    const name = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.name || '—'} <span class="tag">${r.symbol || ''}</span></a>`
                      : `${r.name || '—'} <span class="tag">${r.symbol || ''}</span>`;
-  const capVal = (r.marketCap != null && isFinite(r.marketCap)) ? r.marketCap
+    const capVal = (r.marketCap != null && isFinite(r.marketCap)) ? r.marketCap
                  : (r.fdv != null && isFinite(r.fdv)) ? r.fdv
                  : null;
-  return `<tr>${td(head)}${td(name)}${td(chg(r.priceChange?.h24))}${td(fmtUSD(r.volume24h))}${td(capVal!=null ? fmtUSD(capVal) : '—')}</tr>`;
-}
+    return `<tr>${td(head)}${td(name)}${td(chg(r.priceChange?.h24))}${td(fmtUSD(r.volume24h))}${td(capVal!=null ? fmtUSD(capVal) : '—')}</tr>`;
+  }
   function wireTokenIconClicks(){
     document.querySelectorAll('.tokclick').forEach(img=>{
       img.addEventListener('click',(e)=>{ e.preventDefault(); e.stopPropagation(); startSingleFromIcon(img.dataset.ca); });
@@ -347,34 +346,32 @@ async function mkRow(i,r){
     wireTokenIconClicks();
   }
 
-  /* header tiles */
-  function renderHeaderStats(b){
-    if(!b) return;
-    const capVal = (typeof b.fdv === 'number' && !isNaN(b.fdv)) ? b.fdv : (typeof b.marketCap === 'number' ? b.marketCap : 0);
-    const fmt=(n)=>'$'+Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n||0);
-    document.getElementById('tabsCap').textContent = fmt(capVal);
-    document.getElementById('tabsVol').textContent = fmt(b.vol24 || 0);
-    const chgEl = document.getElementById('tabsChg');
-    chgEl.textContent = ((b.chg24 ?? 0).toFixed(2)) + '%';
-    chgEl.className = (b.chg24 ?? 0) >= 0 ? 'delta-pos mono' : 'delta-neg mono';
-    document.getElementById('tabsLink').href = b.url || '#';
+  // API helpers that always return the snapshot object (not wrapper)
+  async function latest(){
+    const r=await fetch('/api/snapshot/latest');
+    const j=await r.json();
+    return j && j.ok ? j.snapshot : null;
   }
-  function setTracked(n){ document.getElementById('trackedLine').textContent = `${(n||0).toLocaleString('en-US')} tokens tracked`; }
+  async function refresh(){
+    const r=await fetch('/api/refresh',{method:'POST'});
+    const j=await r.json();
+    return j && j.ok ? j.snapshot : null;
+  }
+  async function addToken(ca){
+    const r=await fetch('/api/add-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ca})});
+    return r.json();
+  }
 
-  /* API */
-  async function latest(){ const r=await fetch('/api/snapshot/latest'); const j=await r.json(); return j.snapshot||null; }
-  async function refresh(){ const r=await fetch('/api/refresh',{method:'POST'}); const j=await r.json(); return j.snapshot || j; }
-  async function addToken(ca){ const r=await fetch('/api/add-token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ca})}); return r.json(); }
-
-  /* state */
-  let snapshot=null, mode='gainers', single=false, currentCA=null;
+  // state
+  let snap=null, mode='gainers', single=false, currentCA=null;
   const tabGainersBtn = document.getElementById('tabGainers');
   const tabVolBtn     = document.getElementById('tabVol');
   const clearBtn      = document.getElementById('clearBtn');
   const reloadBtn     = document.getElementById('reloadBtn');
+  const scanStatus    = document.getElementById('scanStatus');
 
   function applyMode(){ tabGainersBtn.classList.toggle('active',mode==='gainers'); tabVolBtn.classList.toggle('active',mode==='vol'); }
-  async function renderByMode(){ if(!snapshot) return; const list=mode==='gainers'?(snapshot.topGainers||[]):(snapshot.topVol||[]); await renderTableRows(list); }
+  async function renderByMode(){ if(!snap) return; const list=mode==='gainers'?(snap.topGainers||[]):(snap.topVol||[]); await renderTableRows(list); }
 
   function enterSingleTokenMode(){
     single=true; tabGainersBtn.style.display='none'; tabVolBtn.style.display='none';
@@ -384,7 +381,7 @@ async function mkRow(i,r){
     single=false; currentCA=null; document.getElementById('search').value='';
     tabGainersBtn.style.display=''; tabVolBtn.style.display='';
     clearBtn.style.display='none'; reloadBtn.style.display='none';
-    document.getElementById('scanStatus').textContent='';
+    scanStatus.textContent='';
   }
 
   async function renderSingle(ca){
@@ -404,155 +401,98 @@ async function mkRow(i,r){
       document.getElementById('top5').innerHTML=`<tr><td colspan="5">Fetch error for ${currentCA}</td></tr>`;
       document.getElementById('rest10').innerHTML='';
     }
-    // Kick off the deep scan (A+B) — cache-first
-    window.TABS_EXT && window.TABS_EXT.startScan(currentCA);
+    if(window.TABS_EXT) window.TABS_EXT.startScan(currentCA); // integration populates A+B
   }
   async function startSingleFromIcon(ca){ document.getElementById('search').value=ca; await renderSingle(ca); }
 
-  async function updateHeaderForSpecialToken(){
-    try{
-      const tokRes=await fetch(`https://api.dexscreener.com/tokens/v1/abstract/${SPECIAL_CA}`);
-      const tokArr=await tokRes.json();
-      const t=Array.isArray(tokArr)&&tokArr.length?tokArr[0]:null;
-
-      let vol24=0;
-      try{
-        const pairsRes=await fetch(`https://api.dexscreener.com/token-pairs/v1/abstract/${SPECIAL_CA}`);
-        const pairs=await pairsRes.json();
-        if(Array.isArray(pairs)){ for(const p of pairs){ const v=Number(p?.volume?.h24||0); if(isFinite(v)) vol24+=v; } }
-      }catch{}
-
-      const fdv=Number(t?.fdv ?? null), cap=Number(t?.marketCap ?? null);
-      const capVal=Number.isFinite(fdv)?fdv:(Number.isFinite(cap)?cap:0);
-      const chg24=Number(t?.priceChange?.h24 ?? 0);
-      const link=t?.url || '#';
-
-      const fmt=(n)=>'$'+Intl.NumberFormat('en-US',{notation:'compact',maximumFractionDigits:2}).format(n||0);
-      document.getElementById('tabsCap').textContent = fmt(capVal);
-      document.getElementById('tabsVol').textContent = fmt(vol24 || Number(t?.volume?.h24 || 0));
-      const chgEl=document.getElementById('tabsChg');
-      chgEl.textContent=(isFinite(chg24)?chg24:0).toFixed(2)+'%';
-      chgEl.className=(chg24>=0?'delta-pos mono':'delta-neg mono');
-      document.getElementById('tabsLink').href=link;
-    }catch(e){ console.warn('Header override failed:',e); }
-  }
-
-
-async function boot(){
-  const scanStatus = document.getElementById('scanStatus');
-
-  // 1) Show cached snapshot instantly
-  try {
-    const latestSnap = await latest(); // GET /api/snapshot/latest
-    if (latestSnap) {
-      snap = latestSnap;
-      renderHeaderStats(snap.banner, snap.bannerSpecial);
-      setTracked(snap.tokensTracked || 0);
-      applyMode();
-      await renderByMode();
-      // give user a hint we're updating in background
-      scanStatus.textContent = 'Updating… fetching fresh stats in the background.';
-    } else {
-      scanStatus.textContent = 'No cached snapshot yet. Building one…';
-    }
-  } catch (e) {
-    console.warn('Failed to load cached snapshot:', e);
-  }
-
-  // 2) Start a background refresh and update UI if newer
-  try {
-    const fresh = await refresh(); // POST /api/refresh
-    if (fresh && (!snap || fresh.ts !== snap.ts)) {
-      snap = fresh;
-      renderHeaderStats(snap.banner, snap.bannerSpecial);
-      setTracked(snap.tokensTracked || 0);
-      applyMode();
-      await renderByMode();
-      scanStatus.textContent = 'Updated just now.';
-      setTimeout(()=> (scanStatus.textContent=''), 2500);
-    } else {
-      // even if ts same, we can quietly clear the status
-      setTimeout(()=> (scanStatus.textContent=''), 1200);
-    }
-  } catch (e) {
-    console.warn('Background refresh failed:', e);
-    // keep the cached UI; show soft error
-    if (scanStatus.textContent === 'Updating… fetching fresh stats in the background.') {
-      scanStatus.textContent = 'Using cached snapshot (refresh failed).';
-      setTimeout(()=> (scanStatus.textContent=''), 2500);
-    }
-  }
-}
-
-
-
-  // Controls
-  tabGainersBtn.onclick=async()=>{ if(single) return; mode='gainers'; applyMode(); await renderByMode(); };
-  tabVolBtn.onclick    =async()=>{ if(single) return; mode='vol';     applyMode(); await renderByMode(); };
-  clearBtn.onclick = async ()=>{ exitSingleTokenMode(); window.TABS_EXT && window.TABS_EXT.reset(); mode='gainers'; applyMode(); await renderByMode(); document.getElementById('expander').style.display=''; };
-  reloadBtn.onclick=async()=>{ if(!currentCA) return; window.TABS_EXT && window.TABS_EXT.startScan(currentCA,{force:true}); };
-  document.getElementById('toggleExpand').onclick=()=>{
-    const e=document.getElementById('expander'); e.classList.toggle('open');
-    document.getElementById('toggleExpand').textContent = e.classList.contains('open') ? 'Show less (−10)' : 'Show more (+10)';
-  };
-document.getElementById('refresh').onclick = async ()=>{
-  const q = (document.getElementById('search').value||'').trim();
-  if (q === '') {
-    // List mode: keep current snapshot on screen, fetch fresh in background
-    const scanStatus = document.getElementById('scanStatus');
-    scanStatus.textContent = 'Refreshing snapshot…';
+  // Two‑phase boot: instant cached → background fresh
+  async function boot(){
     try {
-      const fresh = await refresh(); // POST /api/refresh
+      const cached = await latest(); // fast (snapshots.json)
+      if (cached) {
+        snap = cached;
+        renderHeaderStats(snap.banner, snap.bannerSpecial);
+        setTracked(snap.tokensTracked || 0);
+        applyMode(); await renderByMode();
+        scanStatus.textContent = 'Updating… fetching fresh stats in the background.';
+      } else {
+        scanStatus.textContent = 'No cached snapshot yet. Building one…';
+      }
+    } catch (e) {
+      console.warn('Load cached failed:', e);
+    }
+
+    try {
+      const fresh = await refresh(); // slower (live scan)
       if (fresh && (!snap || fresh.ts !== snap.ts)) {
         snap = fresh;
         renderHeaderStats(snap.banner, snap.bannerSpecial);
         setTracked(snap.tokensTracked || 0);
-        applyMode();
-        await renderByMode();
-        scanStatus.textContent = 'Updated.';
+        applyMode(); await renderByMode();
+        scanStatus.textContent = 'Updated just now.';
+      } else if (!snap) {
+        scanStatus.textContent = 'No snapshot available.';
       } else {
         scanStatus.textContent = 'Already up to date.';
       }
     } catch (e) {
-      console.warn('Manual refresh failed:', e);
-      scanStatus.textContent = 'Refresh failed (using cached snapshot).';
+      console.warn('Background refresh failed:', e);
+      if (!snap) document.getElementById('top5').innerHTML = `<tr><td colspan="5">Snapshot build failed.</td></tr>`;
+      scanStatus.textContent = 'Using cached snapshot (refresh failed).';
     } finally {
       setTimeout(()=> (scanStatus.textContent=''), 2500);
     }
-  } else if (isCA(q)) {
-    // Single‑token mode unchanged
-    await renderSingle(q);
-  } else {
-    if (!single) await renderByMode();
   }
-};
+
+  // top controls
+  tabGainersBtn.onclick=async()=>{ if(single) return; mode='gainers'; applyMode(); await renderByMode(); };
+  tabVolBtn.onclick    =async()=>{ if(single) return; mode='vol';     applyMode(); await renderByMode(); };
+  clearBtn.onclick = async ()=>{ exitSingleTokenMode(); if(window.TABS_EXT) window.TABS_EXT.reset(); mode='gainers'; applyMode(); await renderByMode(); document.getElementById('expander').style.display=''; };
+  reloadBtn.onclick=async()=>{ if(!currentCA) return; if(window.TABS_EXT) window.TABS_EXT.startScan(currentCA,{force:true}); };
+  document.getElementById('toggleExpand').onclick=()=>{
+    const e=document.getElementById('expander'); e.classList.toggle('open');
+    document.getElementById('toggleExpand').textContent = e.classList.contains('open') ? 'Show less (−10)' : 'Show more (+10)';
+  };
+  document.getElementById('refresh').onclick=async()=>{
+    const q=(document.getElementById('search').value||'').trim();
+    if(q===''){
+      scanStatus.textContent = 'Refreshing snapshot…';
+      try{
+        const fresh = await refresh();
+        if (fresh && (!snap || fresh.ts !== snap.ts)) {
+          snap = fresh;
+          renderHeaderStats(snap.banner, snap.bannerSpecial);
+          setTracked(snap.tokensTracked || 0);
+          applyMode(); await renderByMode();
+          scanStatus.textContent = 'Updated.';
+        } else {
+          scanStatus.textContent = 'Already up to date.';
+        }
+      }catch(e){
+        scanStatus.textContent = 'Refresh failed (using cached snapshot).';
+      } finally {
+        setTimeout(()=> (scanStatus.textContent=''), 2500);
+      }
+    } else if (isCA(q)) {
+      await renderSingle(q);
+    } else {
+      if(!single) await renderByMode();
+    }
+  };
   document.getElementById('search').addEventListener('input', async ()=>{ if(single) return; await renderByMode(); });
 
-  // expose for icon click handler
+  // expose tiny API for icon clicks (used by row icons)
   window.TABS_APP = { boot, startSingleFromIcon };
 })();
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.__ABS_BOOTED__) return; window.__ABS_BOOTED__ = true;
-  window.TABS_EXT?.init();
-  window.TABS_APP?.boot();
-});
+</script>
 
-setInterval(async ()=>{
-  try {
-    const latestSnap = await latest(); // GET /api/snapshot/latest
-    if (latestSnap && snap && latestSnap.ts !== snap.ts) {
-      snap = latestSnap;
-      renderHeaderStats(snap.banner, snap.bannerSpecial);
-      setTracked(snap.tokensTracked || 0);
-      applyMode();
-      await renderByMode();
-      const s = document.getElementById('scanStatus');
-      s.textContent = 'Auto‑updated.';
-      setTimeout(()=> (s.textContent=''), 1500);
-    }
-  } catch {}
-}, 30 * 1000); // every 90s; tune as you prefer
-  
+<!-- d3 for bubble map -->
+<script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+<!-- integration for A + B -->
+<script src="/abs-tabs-integration.js"></script>
+<script>
+  if (window.TABS_EXT) window.TABS_EXT.init();
+  if (window.TABS_APP) window.TABS_APP.boot();
 </script>
 </body>
 </html>
