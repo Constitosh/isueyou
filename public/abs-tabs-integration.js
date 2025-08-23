@@ -1,29 +1,40 @@
-/* abs-tabs-integration.js — v3.1 (row click overlay fixed; bubble sizing improved) */
+/* abs-tabs-integration.js — unified A+B integration (v4)
+   - Cache-first deep scan via /api/token-stats (GET) with timestamp
+   - Fresh scan saver via /api/token-stats/save (POST)
+   - Container A: stats + D3 bubble map + snapshot ts
+   - Container B: First 25 vs Top 25 + status grid + row->funders overlay
+   - Funding wallets overlay (ETH + WETH inbound before first receipt)
+   - Hidden "common funders" button (kept in code, not shown)
+   - 5-min holders polling for SPECIAL_HOLDERS_CA updates header tile
+*/
 (function (global) {
   const TABS = {};
 
+  // ======== Config ========
   const BASE_URL = 'https://api.etherscan.io/v2/api';
-  const CHAIN_ID = 2741;
-  const ETHERSCAN_API = 'H13F5VZ64YYK4M21QMPEW78SIKJS85UTWT';
+  const CHAIN_ID = 2741; // Abstract
+  const ETHERSCAN_API = 'H13F5VZ64YYK4M21QMPEW78SIKJS85UTWT'; // user-provided
   const EXPLORER = 'https://abscan.org';
   const MIN_INTERVAL_MS = 250;
-  const ONE_BILLION = 1_000_000_000;
-  const SOLD_ALL_SMALL_HOLD = 2000;
+  const SOLD_ALL_SMALL_HOLD = 2000;  // heuristic
   const IGNORE_FUNDER_OVER_USD = 1_000_000;
   const TOP_FUNDER_LIMIT = 5;
   const TOP_COMMON_LIMIT = 5;
   const SPECIAL_HOLDERS_CA = '0x8c3d850313eb9621605cd6a1acb2830962426f67';
 
+  // ======== DOM ========
   const $ = (s) => document.querySelector(s);
+
+  // Status line (center)
   const scanStatusEl = () => $('#scanStatus');
 
-  // A
+  // Container A
   const aSnap = () => $('#aSnapshot');
   const aStats = () => $('#aTokenStats');
   const aBubble = () => $('#bubble-canvas');
   const aBubbleNote = () => $('#a-bubble-note');
 
-  // B
+  // Container B
   const bStatusGrid = () => $('#statusGrid');
   const firstBtn = () => $('#btnFirst25');
   const topBtn = () => $('#btnTop25');
@@ -38,12 +49,14 @@
   const holdersExpander = () => $('#holdersExpander');
   const holdersToggle = () => $('#holdersToggle');
 
+  // Overlays + header tile
   const fundersOverlay = () => $('#fundersOverlay');
   const fundersInner = () => $('#fundersInner');
   const commonOverlay = () => $('#commonOverlay');
   const commonInner = () => $('#commonInner');
   const holdersTile = () => $('#tabsHolders');
 
+  // ======== UI helpers ========
   function setScanStatus(msg) {
     if (scanStatusEl()) scanStatusEl().textContent = msg || '';
     const bubbleStatusText = document.getElementById('bubbleStatusText');
@@ -75,6 +88,7 @@
   function topicToAddress(topic){ return '0x' + topic.slice(26).toLowerCase(); }
   function isCA(s){ return /^0x[0-9a-fA-F]{40}$/.test((s || '').trim()); }
 
+  // ======== Rate-limited queue ========
   const q = []; let pumping = false;
   const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
   async function pump(){ if (pumping) return; pumping = true; while(q.length){ const job=q.shift(); try{ const res=await job.fn(); job.resolve(res);}catch(e){ job.reject(e);} await sleep(MIN_INTERVAL_MS);} pumping=false; }
@@ -93,6 +107,7 @@
     });
   }
 
+  // ======== Etherscan-like APIs ========
   async function apiLogsTransfer(token){
     const TRANSFER_SIG = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
     return apiGet({ module:'logs', action:'getLogs', address: token, topic0: TRANSFER_SIG, fromBlock: 0, toBlock: 'latest' });
@@ -113,6 +128,7 @@
     return /^[0-9]+$/.test(raw) ? BigInt(raw) : 0n;
   }
 
+  // ======== Dexscreener helpers ========
   async function priceUsdForToken(contract){
     try{
       const res = await fetch(`https://api.dexscreener.com/token-pairs/v1/abstract/${contract}`);
@@ -145,14 +161,15 @@
     return { totalUsd: total };
   }
 
+  // ======== Bubble map (D3) ========
   function renderBubble({ root, holders, extras }){
     root.innerHTML='';
-    const width  = root.clientWidth || 960;
-    const height = Math.max(600, root.clientHeight || 520);
-    const data = holders.concat(extras || []);
+    const width = root.clientWidth || 960;
+    const height = Math.max(220, Math.round(width * 0.45));
+    const data = (holders||[]).concat(extras || []);
     const svg = d3.select(root).append('svg').attr('width', width).attr('height', height);
     const pack = d3.pack().size([width,height]).padding(3);
-    const droot = d3.hierarchy({ children:data }).sum(d=>d.balance);
+    const droot = d3.hierarchy({ children:data }).sum(d=>Math.max(0.000001, d.balance||0));
     const nodes = pack(droot).leaves();
 
     let tip = d3.select('#bubble-tip');
@@ -188,6 +205,7 @@
       .text(d=> d.data.__type==='lp' ? 'LP' : `${(d.data.pct||0).toFixed(2)}%`);
   }
 
+  // ======== Persistence API (server) ========
   async function loadCachedScan(ca){
     try{
       const r = await fetch(`/api/token-stats/${ca}`);
@@ -207,8 +225,9 @@
     }catch{ return { ok:false }; }
   }
 
+  // ======== Receivers + statuses ========
   async function getFirst27Receivers(token){
-    const logs = await apiLogsTransfer(token);
+    const logs = await apiLogsTransfer(token).catch(()=>[]);
     const seen = new Set(); const out=[];
     for (const l of logs){
       if (!Array.isArray(l.topics) || l.topics.length<3) continue;
@@ -216,7 +235,7 @@
       if (seen.has(to)) continue;
       out.push({ address:to, timeStamp:Number(l.timeStamp||l.blockTimestamp||0), txHash:l.transactionHash, firstInAmount:0 });
       seen.add(to);
-      if (out.length>=27) break;
+      if (out.length>=27) break; // we will drop the first two (likely LP/mints)
     }
     return out.slice(2);
   }
@@ -230,15 +249,15 @@
       if (to===me){ totalIn+=amt; holdings+=amt; if (Number(t.timeStamp)<earliestTs){ earliestTs=Number(t.timeStamp); firstIn=amt; } }
       else if (from===me){ totalOut+=amt; holdings-=amt; }
     }
-    if (totalIn > ONE_BILLION || totalOut > ONE_BILLION) return { ...rec, filteredOut:true };
     const EPS=1e-9; let status='hold', sClass='s-hold'; const h=Math.max(0,holdings);
-    if (h < SOLD_ALL_SMALL_HOLD - EPS || Math.abs(h) <= EPS){ status='sold all'; sClass='s-sold'; }
+    if (Math.abs(h) <= EPS || h < SOLD_ALL_SMALL_HOLD - EPS){ status='sold all'; sClass='s-sold'; }
     else if (Math.abs(h-firstIn) <= EPS){ status='hold'; sClass='s-hold'; }
     else if ((totalIn-firstIn) > EPS && Math.abs(totalIn-h) <= EPS){ status='bought more'; sClass='s-more'; }
     else if (h < firstIn - EPS){ status='sold part'; sClass='s-part'; }
-    return { ...rec, firstInAmount:firstIn, timeStamp: earliestTs!==Infinity ? earliestTs : rec.timeStamp, totalIn, totalOut, holdings:h, status, sClass, filteredOut:false };
+    return { ...rec, firstInAmount:firstIn, timeStamp: earliestTs!==Infinity ? earliestTs : rec.timeStamp, totalIn, totalOut, holdings:h, status, sClass };
   }
 
+  // ======== Funding discovery & overlays ========
   async function getFundingWallets(addr, cutoffTs){
     const [nativeTxs, erc20Txs] = await Promise.all([
       apiTxlist(addr).catch(()=>[]),
@@ -294,19 +313,20 @@
   }
 
   function wireBuyerRowClicks(){
-    [buyersTop5(), buyersRest()].forEach(tbody=>{
+    // Click a row → open funders overlay and start scan.
+    const wire = (tbody) => {
+      if (!tbody) return;
       tbody.querySelectorAll('tr').forEach(tr=>{
         tr.addEventListener('click', ()=> openFundersForRow(tr));
         const a = tr.querySelector('a'); if (a) a.addEventListener('click', (e)=> e.stopPropagation());
       });
-    });
+    };
+    wire(buyersTop5()); wire(buyersRest());
   }
-
-  function showOverlay(el){ if (el) el.style.display='flex'; }
-  function hideOverlay(el){ if (el) el.style.display='none'; }
 
   async function openFundersForRow(tr){
     const addr = tr.getAttribute('data-addr'); const ts = Number(tr.getAttribute('data-ts')||0);
+    if (!addr) return;
     showOverlay(fundersOverlay());
     fundersInner().innerHTML = `<div class="banner mono"><span class="spinner"></span> Finding funding wallets (ETH + WETH)…</div>`;
     setScanStatus('Finding funding wallets (ETH + WETH)…');
@@ -329,22 +349,22 @@
           Top ${TOP_FUNDER_LIMIT} funders by balance. Ignored funders with &gt; $1.000.000 portfolios.
         </div>
         ${top.map(r=>{
-          const portal=\`https://portal.abs.xyz/profile/\${r.address}\`; const abscan=\`${EXPLORER}/address/\${r.address}\`;
-          return \`<div class="f-card">
+          const portal=`https://portal.abs.xyz/profile/${r.address}`; const abscan=`${EXPLORER}/address/${r.address}`;
+          return `<div class="f-card" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px;margin:8px 0;background:rgba(255,255,255,.03)">
             <div>
-              <div class="addr">\${r.address}</div>
-              <div class="chips">
-                <span class="chip">ETH in: <span class="mono">\${fmtNum(r.meta.ethAmount,6)} (\${r.meta.ethCount})</span></span>
-                <span class="chip">WETH in: <span class="mono">\${fmtNum(r.meta.wethAmount,6)} (\${r.meta.wethCount})</span></span>
-                <span class="chip">Tokens $: <span class="mono">\${fmtNum(r.tokenUsd,2)}</span></span>
-                <span class="chip">ETH bal: <span class="mono">\${fmtNum(r.eth,6)}</span></span>
+              <div class="addr mono" style="font-weight:700">${r.address}</div>
+              <div class="chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">
+                <span class="chip" style="border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 8px">ETH in: <span class="mono">${fmtNum(r.meta.ethAmount,6)} (${r.meta.ethCount})</span></span>
+                <span class="chip" style="border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 8px">WETH in: <span class="mono">${fmtNum(r.meta.wethAmount,6)} (${r.meta.wethCount})</span></span>
+                <span class="chip" style="border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 8px">Tokens $: <span class="mono">${fmtNum(r.tokenUsd,2)}</span></span>
+                <span class="chip" style="border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:4px 8px">ETH bal: <span class="mono">${fmtNum(r.eth,6)}</span></span>
               </div>
             </div>
-            <div class="links">
-              <button class="btn mono" onclick="window.open('\${portal}','_blank')">Portal</button>
-              <a class="btn mono" href="\${abscan}" target="_blank" rel="noopener">Explorer</a>
+            <div class="links" style="display:flex;gap:8px;flex-shrink:0">
+              <button class="btn mono" onclick="window.open('${portal}','_blank')">Portal</button>
+              <a class="btn mono" href="${abscan}" target="_blank" rel="noopener">Explorer</a>
             </div>
-          </div>\`;
+          </div>`;
         }).join('')}
         <div style="margin-top:10px; display:none">
           <button id="findCommonBtn" class="btn mono">Find common funders among these</button>
@@ -375,13 +395,13 @@
       if (!shared.length){ commonInner().innerHTML = `<div class="banner mono">No common funders found.</div>`; return; }
       commonInner().innerHTML = shared.map(s=>{
         const portal=`https://portal.abs.xyz/profile/${s.address}`; const abscan=`${EXPLORER}/address/${s.address}`;
-        return `<div class="f-card">
+        return `<div class="f-card" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px;margin:8px 0;background:rgba(255,255,255,.03)">
           <div>
-            <div class="addr">${s.address}</div>
-            <div class="note mono">Token portfolio: $${fmtNum(s.tokenUsd,2)} • Seen in <span class="mono">${s.count}</span> wallets</div>
-            <div class="note mono">Wallets funded: ${s.who.map(w=>`<span class="mono">${shortAddr(w)}</span>`).join(', ')}</div>
+            <div class="addr mono" style="font-weight:700">${s.address}</div>
+            <div class="note mono" style="opacity:.85">Token portfolio: $${fmtNum(s.tokenUsd,2)} • Seen in <span class="mono">${s.count}</span> wallets</div>
+            <div class="note mono" style="opacity:.85">Wallets funded: ${s.who.map(w=>`<span class="mono">${shortAddr(w)}</span>`).join(', ')}</div>
           </div>
-          <div class="links">
+          <div class="links" style="display:flex;gap:8px;flex-shrink:0">
             <button class="btn mono" onclick="window.open('${portal}','_blank')">Portal</button>
             <a class="btn mono" href="${abscan}" target="_blank" rel="noopener">Explorer</a>
           </div>
@@ -390,6 +410,7 @@
     }catch(e){ commonInner().innerHTML = `<div class="banner mono">Error: ${e.message||e}</div>`; }
   }
 
+  // ======== Full token overview (scan) + save ========
   async function doFreshScan(contract){
     const result = { meta:{ contract }, a:{}, b:{} };
 
@@ -406,6 +427,7 @@
       creatorAddress = (Array.isArray(cData?.result) && cData.result[0]?.contractCreator) ? cData.result[0].contractCreator.toLowerCase() : '';
     }catch{}
 
+    // LP pair addresses (for LP bubbles)
     let pairAddresses = [];
     try{
       const pr = await fetch(`https://api.dexscreener.com/token-pairs/v1/abstract/${contract}`);
@@ -430,14 +452,15 @@
     const firstInMap = new Map();
 
     for (const t of txs){
-      const from=(t.from||t.fromAddress).toLowerCase(); const to=(t.to||t.toAddress).toLowerCase();
+      const from=(t.from||t.fromAddress||'').toLowerCase(); const to=(t.to||t.toAddress||'').toLowerCase();
       const v=toBI(t.value||'0'); const ts=Number(t.timeStamp)||0;
       if (from===ZERO) mintedUnits+=v;
       if (burnSet.has(to)) burnedUnits+=v;
+      // ignore contract self-moves
       if (from===contract || to===contract) continue;
       if (!burnSet.has(from)) balances[from]=(balances[from]||0n)-v;
       if (!burnSet.has(to))   balances[to]=(balances[to]||0n)+v;
-      if (!firstInMap.has(to)) firstInMap.set(to, { ts, v });
+      if (!firstInMap.has(to) && !burnSet.has(to)) firstInMap.set(to, { ts, v });
     }
     const currentSupply = mintedUnits>=burnedUnits ? (mintedUnits-burnedUnits) : 0n;
 
@@ -447,6 +470,7 @@
       .map(([address,units])=>({ address, units }));
     holdersAll.sort((a,b)=> (b.units>a.units) ? 1 : (b.units<a.units) ? -1 : 0);
 
+    // verify top balances against chain at head (top 150)
     setScanStatus('Verifying top balances…');
     const toVerify = holdersAll.slice(0,150).map(h=>h.address); const verified={};
     for (let i=0;i<toVerify.length;i++){ const a=toVerify[i]; verified[a]=await tokenBalanceOf(contract,a).catch(()=>null); await sleep(100); }
@@ -469,6 +493,7 @@
     const top10Pct = holdersForBubbles.slice(0,10).reduce((s,h)=> s+(h.pct||0),0);
     const creatorPct = creatorAddress ? (holdersForBubbles.find(h=>h.address.toLowerCase()===creatorAddress)?.pct || 0) : 0;
 
+    // A (stats)
     result.a = {
       tokenDecimals,
       minted: Number(mintedUnits)/(10**tokenDecimals),
@@ -482,6 +507,7 @@
       lpNodes
     };
 
+    // B (holders + receivers)
     const top25 = holdersAll.slice(0,25).map((h,i)=>{
       const first = firstInMap.get(h.address) || { ts:0, v:0n };
       return {
@@ -499,17 +525,21 @@
     setScanStatus('Computing totals & statuses per wallet…');
     for (const r of receivers){
       const st = await enrichReceiverStats(contract, r).catch(()=>null);
-      if (st && !st.filteredOut) enriched.push(st);
+      if (st) enriched.push(st);
       await sleep(50);
     }
 
     result.b = { first25: enriched.slice(0,25), top25 };
+
+    // done
     return result;
   }
 
   function renderFromData(snapshot){
+    // Header note
     if (aSnap()) aSnap().textContent = snapshot.ts ? new Date(snapshot.ts).toLocaleString() : '';
 
+    // Container A
     const A = snapshot.a || {};
     aStats().innerHTML = `
       <div class="statrow mono"><b>Minted</b><span>${fmtNum(A.minted,6)}</span></div>
@@ -522,26 +552,41 @@
     renderBubble({ root:aBubble(), holders:(A.holdersForBubbles||[]), extras:(A.lpNodes||[]) });
     aBubbleNote().innerHTML = A.burned>0 ? `<span class="mono">🔥 Burn — ${fmtNum(A.burned,6)} tokens</span>` : '';
 
+    // Container B
     const B = snapshot.b || {};
     const buyers = (B.first25||[]);
     const holders = (B.top25||[]);
-    const five = buyers.slice(0,5), rest = buyers.slice(5,25);
-    bStatusGrid().innerHTML = ''; buyers.slice(0,25).forEach(r=>{ const d=document.createElement('div'); d.className='s-pill '+r.sClass; d.textContent=r.status; bStatusGrid().appendChild(d); });
+    renderStatusGrid(buyers);
 
+    const five = buyers.slice(0,5), rest = buyers.slice(5,25);
     buyersTop5().innerHTML = five.map((r,i)=>rowBuyers(i,r)).join('');
     buyersRest().innerHTML = rest.map((r,i)=>rowBuyers(i+5,r)).join('');
     buyersExpander().style.display = rest.length ? '' : 'none';
+    if (buyersToggle()){
+      buyersToggle().onclick = ()=>{
+        buyersExpander().classList.toggle('open');
+        buyersToggle().textContent = buyersExpander().classList.contains('open') ? 'Show less (−20)' : 'Show more (+20)';
+      };
+    }
     wireBuyerRowClicks();
 
     const hFive = holders.slice(0,5), hRest = holders.slice(5,25);
     holdersTop5().innerHTML = hFive.map((r,i)=>rowHolder(i,r)).join('');
     holdersRest().innerHTML = hRest.map((r,i)=>rowHolder(i+5,r)).join('');
     holdersExpander().style.display = hRest.length ? '' : 'none';
+    if (holdersToggle()){
+      holdersToggle().onclick = ()=>{
+        holdersExpander().classList.toggle('open');
+        holdersToggle().textContent = holdersExpander().classList.contains('open') ? 'Show less (−20)' : 'Show more (+20)';
+      };
+    }
 
+    // default view
     buyersPanel().style.display=''; holdersPanel().style.display='none';
     firstBtn().classList.add('active'); topBtn().classList.remove('active');
   }
 
+  // ======== Orchestrators ========
   async function showWithCacheThenMaybeRefresh(ca, forceFresh){
     if (!forceFresh){
       const cached = await loadCachedScan(ca);
@@ -558,6 +603,7 @@
     return { usedCache:false };
   }
 
+  // 5-min holders poll (special token)
   async function computeApproxHolders(contract){
     try{
       const txs = await fetchAllTokenTx(contract);
@@ -579,12 +625,14 @@
     setInterval(()=>computeApproxHolders(SPECIAL_HOLDERS_CA), 5*60*1000);
   }
 
+  // ======== Public API ========
   TABS.startScan = async function(ca, { force=false } = {}){
     if (!isCA(ca)){ setScanStatus('Enter a valid token contract.'); return; }
+    // wipe UI
     aSnap().textContent=''; aStats().innerHTML=''; aBubble().innerHTML=''; aBubbleNote().textContent='';
     buyersTop5().innerHTML=''; buyersRest().innerHTML=''; holdersTop5().innerHTML=''; holdersRest().innerHTML='';
     bStatusGrid().innerHTML='';
-    aBubble().innerHTML = `<div class="banner mono"><span class="spinner"></span> <span id="bubbleStatusText">${scanStatusEl().textContent||'Scanning…'}</span></div>`;
+    aBubble().innerHTML = `<div class="banner mono"><span class="spinner"></span> <span id="bubbleStatusText">${scanStatusEl()?.textContent||'Scanning…'}</span></div>`;
     aStats().innerHTML = `<div class="banner mono"><span class="spinner"></span> <span>Preparing…</span></div>`;
     setScanStatus(force ? 'Reloading fresh snapshot…' : 'Starting scan…');
     try{
@@ -604,24 +652,28 @@
     bStatusGrid().innerHTML='';
   };
 
+  // Buttons & overlays
   function wireTabButtons(){
     if (!firstBtn() || !topBtn()) return;
     firstBtn().onclick = ()=>{ firstBtn().classList.add('active'); topBtn().classList.remove('active'); buyersPanel().style.display=''; holdersPanel().style.display='none'; };
     topBtn().onclick   = ()=>{ topBtn().classList.add('active'); firstBtn().classList.remove('active'); buyersPanel().style.display='none'; holdersPanel().style.display=''; };
-    if (buyersToggle()){ buyersToggle().onclick = ()=>{ buyersExpander().classList.toggle('open'); buyersToggle().textContent = buyersExpander().classList.contains('open') ? 'Show less (−20)' : 'Show more (+20)'; }; }
-    if (holdersToggle()){ holdersToggle().onclick = ()=>{ holdersExpander().classList.toggle('open'); holdersToggle().textContent = holdersExpander().classList.contains('open') ? 'Show less (−20)' : 'Show more (+20)'; }; }
   }
+  function showOverlay(el){ if (el) el.style.display='flex'; }
+  function hideOverlay(el){ if (el) el.style.display='none'; }
   function wireOverlays(){
     const x1=$('#closeFunders'); if (x1) x1.onclick=()=>hideOverlay(fundersOverlay());
     const x2=$('#closeCommon'); if (x2) x2.onclick=()=>hideOverlay(commonOverlay());
-    fundersOverlay().addEventListener('click',(e)=>{ if (e.target===fundersOverlay()) hideOverlay(fundersOverlay()); });
-    commonOverlay().addEventListener('click',(e)=>{ if (e.target===commonOverlay()) hideOverlay(commonOverlay()); });
+    if (fundersOverlay()) fundersOverlay().addEventListener('click',(e)=>{ if (e.target===fundersOverlay()) hideOverlay(fundersOverlay()); });
+    if (commonOverlay())  commonOverlay().addEventListener('click',(e)=>{ if (e.target===commonOverlay()) hideOverlay(commonOverlay()); });
   }
 
   TABS.init = function(){
-    wireTabButtons(); wireOverlays(); startHoldersPoll();
+    wireTabButtons();
+    wireOverlays();
+    startHoldersPoll();
   };
 
+  // ======== Internals ========
   async function fetchAllTokenTx(contract){
     const all=[]; const offset=10000; let page=1;
     while(true){
@@ -641,5 +693,6 @@
     let best=18, cnt=-1; for (const [d,c] of freq.entries()){ if (c>cnt || (c===cnt && d>best)){ best=d; cnt=c; } } return best;
   }
 
+  // Expose
   global.TABS_EXT = TABS;
 })(window);
