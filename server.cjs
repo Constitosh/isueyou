@@ -183,7 +183,7 @@ async function buildSnapshot() {
       marketCap: null,
       vol24: volSum,
       chg24: 0,
-      url: 'https://dexscreener.com/abstract/0x8c3d850313eb9621605cd6a1acb2830962426f67'
+      url: 'https://dexscreener.com/abstract'
     },
     topGainers: clamp15(topGainers),
     topVol:     clamp15(topVol),
