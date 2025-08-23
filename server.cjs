@@ -17,12 +17,6 @@ const TOKENS_LIB_FILE = path.join(DATA_DIR, 'tokens-lib.json');
 const SNAPSHOTS_FILE  = path.join(DATA_DIR, 'snapshots.json');
 const TOKEN_STATS_FILE= path.join(DATA_DIR, 'token-stats.json');
 
-const SPECIAL_CA = '0x8c3d850313eb9621605cd6a1acb2830962426f67';
-
-async function fetchDexTokenOverview(ca) { ... }
-async function fetchDexTokenPairsVolume24h(ca) { ... }
-
-
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 // ---------- JSON helpers ----------
@@ -87,34 +81,6 @@ async function fetchTokenAbstract(ca) {
   if (!Array.isArray(arr) || !arr.length) throw new Error('Token not found');
   return arr[0];
 }
-
-// --- Dexscreener helpers for a single token (banner) ---
-const SPECIAL_CA = '0x8c3d850313eb9621605cd6a1acb2830962426f67';
-
-async function fetchDexTokenOverview(ca) {
-  try {
-    const r = await fetch(`https://api.dexscreener.com/tokens/v1/abstract/${ca}`);
-    const arr = await r.json();
-    return Array.isArray(arr) && arr.length ? arr[0] : null;
-  } catch (_) { return null; }
-}
-
-async function fetchDexTokenPairsVolume24h(ca) {
-  try {
-    const r = await fetch(`https://api.dexscreener.com/token-pairs/v1/abstract/${ca}`);
-    const pairs = await r.json();
-    if (!Array.isArray(pairs)) return 0;
-    let sum = 0;
-    for (const p of pairs) {
-      const v = Number(p?.volume?.h24 || 0);
-      if (isFinite(v)) sum += v;
-    }
-    return sum;
-  } catch (_) { return 0; }
-}
-
-
-
 
 // Search: discover all pairs for a token CA (and get their 24h vols in one go)
 async function searchPairsForToken(ca) {
@@ -211,28 +177,14 @@ async function buildSnapshot() {
   const snapshot = {
     ts: Date.now(),
     chain: 'abstract',
-
-// Build banner for the header using the SPECIAL_CA ($tABS)
-const tabOverview = await fetchDexTokenOverview(SPECIAL_CA);
-const tabVol24 = await fetchDexTokenPairsVolume24h(SPECIAL_CA); // sum across pairs
-
-const fdvNum       = Number(tabOverview?.fdv);
-const mcapNum      = Number(tabOverview?.marketCap);
-const chg24Num     = Number(tabOverview?.priceChange?.h24);
-const useCap       = Number.isFinite(mcapNum) ? mcapNum : (Number.isFinite(fdvNum) ? fdvNum : 0);
-const bannerUrl    = tabOverview?.url || `https://dexscreener.com/abstract/${SPECIAL_CA}`;
-
-snapshot.banner = {
-  holders: null,
-  fdv: Number.isFinite(fdvNum) ? fdvNum : null,
-  marketCap: Number.isFinite(mcapNum) ? mcapNum : null,
-  vol24: Number.isFinite(tabVol24) ? tabVol24 : 0,
-  chg24: Number.isFinite(chg24Num) ? chg24Num : 0,
-  url: bannerUrl,
-  capAny: useCap
-};
-
-    
+    banner: {
+      holders: null,
+      fdv: Number.isFinite(capAny) ? Number(capAny) : null, // used by header "Market Cap"
+      marketCap: null,
+      vol24: volSum,
+      chg24: 0,
+      url: 'https://dexscreener.com/abstract'
+    },
     topGainers: clamp15(topGainers),
     topVol:     clamp15(topVol),
     tokensTracked: tokens.length
