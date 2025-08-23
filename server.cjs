@@ -180,10 +180,10 @@ async function buildSnapshot() {
     banner: {
       holders: null,
       fdv: Number.isFinite(capAny) ? Number(capAny) : null, // used by header "Market Cap"
-      marketCap: null,
-      vol24: volSum,
+      marketCap: nul,
+      vol24: volSu,
       chg24: 0,
-      url: 'https://dexscreener.com/abstract'
+      url: 'https://dexscreener.com/abstract/0x8c3d850313eb9621605cd6a1acb2830962426f67'
     },
     topGainers: clamp15(topGainers),
     topVol:     clamp15(topVol),
