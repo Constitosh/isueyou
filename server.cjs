@@ -1,5 +1,5 @@
 // server.cjs — $tABS backend (Express / Node 18+)
-// Persists: data/tokens-lib.json, data/snapshots.json, data/token-stats.json
+// Persists runtime data in: data/tokens-lib.json, data/snapshots.json, data/token-stats.json
 
 const path = require('path');
 const fs = require('fs');
@@ -8,18 +8,22 @@ const express = require('express');
 const app = express();
 app.use(express.json({ limit: '2mb' }));
 
-// ---------- Paths ----------
+// ---- Paths ----
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 
-const TOKENS_LIB_FILE = path.join(DATA_DIR, 'tokens-lib.json');
-const SNAPSHOTS_FILE  = path.join(DATA_DIR, 'snapshots.json');
-const TOKEN_STATS_FILE= path.join(DATA_DIR, 'token-stats.json');
+const TOKENS_LIB_FILE  = path.join(DATA_DIR, 'tokens-lib.json');
+const SNAPSHOTS_FILE   = path.join(DATA_DIR, 'snapshots.json');
+const TOKEN_STATS_FILE = path.join(DATA_DIR, 'token-stats.json');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-// ---------- JSON helpers ----------
+// ---- Constants ----
+const SPECIAL_CA = '0x8c3d850313eb9621605cd6a1acb2830962426f67'; // $tABS (lowercased below)
+const SLEEP = (ms)=> new Promise(r=> setTimeout(r, ms));
+
+// ---- JSON helpers ----
 function readJSON(file, fallback) {
   try {
     if (!fs.existsSync(file)) return fallback;
@@ -42,21 +46,13 @@ function writeJSON(file, obj) {
     return false;
   }
 }
-const sleep = (ms)=> new Promise(r=> setTimeout(r, ms));
-const clamp15 = (arr)=> Array.isArray(arr) ? arr.slice(0, 15) : [];
-
-// ---------- Data defaults ----------
 function ensureTokensLib() {
   const lib = readJSON(TOKENS_LIB_FILE, null) || { tokens: [], tokenPairs: {} };
   if (!Array.isArray(lib.tokens)) lib.tokens = [];
-  if (!lib.tokenPairs || typeof lib.tokenPairs !== 'object') lib.tokenPairs = {};
-  // normalize lowercase
   lib.tokens = Array.from(new Set(lib.tokens.map(x=> String(x).toLowerCase())));
   const fixed = {};
-  for (const [k,v] of Object.entries(lib.tokenPairs)) {
-    const key = k.toLowerCase();
-    const list = Array.isArray(v) ? v : [];
-    fixed[key] = Array.from(new Set(list.map(p=>String(p).toLowerCase())));
+  for (const [k,v] of Object.entries(lib.tokenPairs || {})) {
+    fixed[k.toLowerCase()] = Array.from(new Set((Array.isArray(v)?v:[]).map(p=>String(p).toLowerCase())));
   }
   lib.tokenPairs = fixed;
   return lib;
@@ -72,7 +68,7 @@ function ensureTokenStatsFile() {
   return m;
 }
 
-// ---------- Dexscreener helpers ----------
+// ---- Dexscreener helpers ----
 async function fetchTokenAbstract(ca) {
   const url = `https://api.dexscreener.com/tokens/v1/abstract/${ca}`;
   const res = await fetch(url);
@@ -82,14 +78,13 @@ async function fetchTokenAbstract(ca) {
   return arr[0];
 }
 
-// Search: discover all pairs for a token CA (and get their 24h vols in one go)
+// Discover pairs & aggregate their 24h volume
 async function searchPairsForToken(ca) {
   const url = `https://api.dexscreener.com/latest/dex/search?q=${ca}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Dexscreener search HTTP ${res.status}`);
   const j = await res.json();
   const pairs = Array.isArray(j?.pairs) ? j.pairs : (Array.isArray(j) ? j : []);
-  // only base token matches
   const filtered = pairs.filter(p => (p?.baseToken?.address || '').toLowerCase() === ca.toLowerCase());
   const pairAddrs = filtered
     .map(p => String(p?.pairAddress || '').toLowerCase())
@@ -98,15 +93,12 @@ async function searchPairsForToken(ca) {
   return { pairAddrs: Array.from(new Set(pairAddrs)), vol24: volSum };
 }
 
-// Aggregate 24h volume across pairs; updates tokens-lib tokenPairs when possible
 async function sumVolume24hForToken(ca, tokensLib) {
   const key = ca.toLowerCase();
   const known = tokensLib.tokenPairs[key] || [];
   try {
-    // Fresh discovery every time we build a snapshot (keeps volumes accurate)
     const { pairAddrs, vol24 } = await searchPairsForToken(key);
     if (pairAddrs.length) {
-      // merge & persist discovered pairs
       const merged = Array.from(new Set([ ...known, ...pairAddrs ]));
       tokensLib.tokenPairs[key] = merged;
       writeJSON(TOKENS_LIB_FILE, tokensLib);
@@ -115,8 +107,7 @@ async function sumVolume24hForToken(ca, tokensLib) {
   } catch (e) {
     console.warn('searchPairsForToken failed:', key, e.message);
   }
-
-  // Fallback to token abstract volume if search returns nothing
+  // fallback: token abstract volume
   try {
     const t = await fetchTokenAbstract(key);
     return Number(t?.volume?.h24 || 0);
@@ -126,11 +117,9 @@ async function sumVolume24hForToken(ca, tokensLib) {
 }
 
 function makeRowFromTokenAbstract(t, ca, volume24h) {
-  // Market Cap fallback to FDV if marketCap is missing (for UI column)
-  const mcFallback = (t?.marketCap != null ? Number(t.marketCap) : null);
-  const fdvNum = (t?.fdv != null ? Number(t.fdv) : null);
-  const mcForRow = (mcFallback != null ? mcFallback : (fdvNum != null ? fdvNum : null));
-
+  const mc     = t?.marketCap != null ? Number(t.marketCap) : null;
+  const fdvNum = t?.fdv       != null ? Number(t.fdv)       : null;
+  const mcForRow = (mc != null ? mc : (fdvNum != null ? fdvNum : null));
   return {
     baseAddress: (t?.baseToken?.address || ca || '').toLowerCase(),
     name: t?.baseToken?.name || '',
@@ -141,14 +130,16 @@ function makeRowFromTokenAbstract(t, ca, volume24h) {
       h6: t?.priceChange?.h6 != null ? Number(t.priceChange.h6) : null,
       h24: t?.priceChange?.h24 != null ? Number(t.priceChange.h24) : null
     },
-    marketCap: mcForRow,           // <<— table uses this (FDV fallback applied)
-    fdv: fdvNum,                   // still keep raw fdv for header logic
+    marketCap: mcForRow,
+    fdv: fdvNum,
     volume24h: Number(volume24h || 0),
     url: t?.url || null
   };
 }
 
-// ---------- Snapshot Builder ----------
+// ---- Snapshot builder ----
+function clamp15(arr){ return Array.isArray(arr) ? arr.slice(0,15) : []; }
+
 async function buildSnapshot() {
   const tokensLib = ensureTokensLib();
   const tokens = tokensLib.tokens || [];
@@ -157,39 +148,64 @@ async function buildSnapshot() {
   for (const ca of tokens) {
     try {
       const t = await fetchTokenAbstract(ca);
-      const vol24 = await sumVolume24hForToken(ca, tokensLib); // also updates tokenPairs in lib
+      const vol24 = await sumVolume24hForToken(ca, tokensLib);
       rows.push(makeRowFromTokenAbstract(t, ca, vol24));
     } catch (e) {
       console.warn('Token fetch failed:', ca, e.message);
     }
-    await sleep(60);
+    await SLEEP(60);
   }
 
   const topGainers = [...rows].sort((a,b)=> (Number(b.priceChange?.h24||0) - Number(a.priceChange?.h24||0)));
   const topVol     = [...rows].sort((a,b)=> (Number(b.volume24h||0) - Number(a.volume24h||0)));
 
   const volSum = rows.reduce((s,r)=> s + (Number(r.volume24h)||0), 0);
-  // Header "Market Cap" shows FDV as fallback if marketCap missing
-  const capAny = (rows.find(r=> Number.isFinite(r.marketCap))?.marketCap)
-              ?? (rows.find(r=> Number.isFinite(r.fdv))?.fdv)
-              ?? 0;
+  const capAny =
+    (rows.find(r=> Number.isFinite(r.marketCap))?.marketCap) ??
+    (rows.find(r=> Number.isFinite(r.fdv))?.fdv) ?? 0;
 
+  // Build base snapshot
   const snapshot = {
     ts: Date.now(),
     chain: 'abstract',
     banner: {
       holders: null,
-      fdv: Number.isFinite(capAny) ? Number(capAny) : null, // used by header "Market Cap"
+      fdv: Number.isFinite(capAny) ? Number(capAny) : null,
       marketCap: null,
       vol24: volSum,
       chg24: 0,
       url: 'https://dexscreener.com/abstract'
     },
     topGainers: clamp15(topGainers),
-    topVol:     clamp15(topVol),
+    topVol: clamp15(topVol),
     tokensTracked: tokens.length
   };
 
+  // Derive "bannerSpecial" from the $tABS row (or compute one-off if missing)
+  const specialKey = SPECIAL_CA.toLowerCase();
+  let specialRow = rows.find(r => r.baseAddress === specialKey);
+  if (!specialRow) {
+    try {
+      const t = await fetchTokenAbstract(specialKey);
+      const vol24 = await sumVolume24hForToken(specialKey, tokensLib);
+      specialRow = makeRowFromTokenAbstract(t, specialKey, vol24);
+    } catch (e) {
+      console.warn('Could not compute special banner for $tABS:', e.message);
+    }
+  }
+  if (specialRow) {
+    const capVal = Number.isFinite(specialRow.marketCap) ? specialRow.marketCap
+                  : Number.isFinite(specialRow.fdv)       ? specialRow.fdv
+                  : 0;
+    snapshot.bannerSpecial = {
+      cap: capVal,
+      vol24: Number(specialRow.volume24h || 0),
+      chg24: Number(specialRow.priceChange?.h24 || 0),
+      url: specialRow.url || 'https://dexscreener.com/abstract'
+    };
+  }
+
+  // Persist snapshots
   const S = ensureSnapshots();
   S.latest = snapshot;
   S.history.unshift(snapshot);
@@ -199,7 +215,7 @@ async function buildSnapshot() {
   return snapshot;
 }
 
-// ---------- Scan lock ----------
+// Concurrency guard
 let isScanning = false;
 async function runScan() {
   if (isScanning) return ensureSnapshots().latest || null;
@@ -208,7 +224,7 @@ async function runScan() {
   finally { isScanning = false; }
 }
 
-// ---------- APIs ----------
+// ---- APIs ----
 app.post('/api/refresh', async (req, res) => {
   try {
     const snap = await runScan();
@@ -228,26 +244,23 @@ app.get('/api/snapshot/latest', (req, res) => {
   }
 });
 
-// Add a token to library + discover pairs + return computed row
+// Add token to library + discover pairs + return computed row
 app.post('/api/add-token', async (req, res) => {
   const caRaw = (req.body?.ca || '').trim();
-  const isCA = /^0x[a-fA-F0-9]{40}$/.test(caRaw);
-  if (!isCA) return res.status(400).json({ ok:false, error:'Invalid contract address' });
+  const valid = /^0x[a-fA-F0-9]{40}$/.test(caRaw);
+  if (!valid) return res.status(400).json({ ok:false, error:'Invalid contract address' });
   const ca = caRaw.toLowerCase();
 
   try {
     const lib = ensureTokensLib();
     if (!lib.tokens.includes(ca)) lib.tokens.push(ca);
 
-    // Discover / update pairs and compute aggregated 24h vol
-    const vol24 = await sumVolume24hForToken(ca, lib); // also persists pairs to tokens-lib.json
+    const vol24 = await sumVolume24hForToken(ca, lib); // updates tokenPairs + persists
 
     const t = await fetchTokenAbstract(ca);
     const row = makeRowFromTokenAbstract(t, ca, vol24);
 
-    // Persist tokens-lib (tokens list may have changed)
     writeJSON(TOKENS_LIB_FILE, lib);
-
     res.json({ ok:true, row, tokensTracked: lib.tokens.length });
   } catch (e) {
     console.error('/api/add-token error:', ca, e.message);
@@ -279,20 +292,20 @@ app.post('/api/token-stats/save', (req, res) => {
   res.json({ ok:true, ts });
 });
 
-// ---------- Static ----------
+// ---- Static ----
 app.use(express.static(PUBLIC_DIR, {
   extensions: ['html'],
   setHeaders: (res) => res.setHeader('Cache-Control', 'no-store')
 }));
 console.log('Serving static from:', PUBLIC_DIR);
 
-// SPA fallback
+// SPA fallback for non-API routes
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) return next();
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 
-// ---------- Boot ----------
+// ---- Boot ----
 const PORT = process.env.PORT || 8080;
 const HOST = process.env.HOST || '0.0.0.0';
 
