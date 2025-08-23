@@ -299,14 +299,17 @@
   const isCA=(s)=>/^0x[a-fA-F0-9]{40}$/.test((s||'').trim());
 
   /* render rows */
-  async function mkRow(i,r){
-    const icon = await getTokenIcon(r.baseAddress);
-    const iconHtml = icon ? `<img class="tokicon tokclick" data-ca="${r.baseAddress}" src="${icon}" alt="" title="Single‑token view">` : ``;
-    const head = `<div class="rowhead"><span>#${r.rank ?? (i+1)}</span>${iconHtml}</div>`;
-    const name = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.name || '—'} <span class="tag">${r.symbol || ''}</span></a>` :
-                          `${r.name || '—'} <span class="tag">${r.symbol || ''}</span>`;
-    return `<tr>${td(head)}${td(name)}${td(chg(r.priceChange?.h24))}${td(fmtUSD(r.volume24h))}${td(r.marketCap!=null?fmtUSD(r.marketCap):'—')}</tr>`;
-  }
+async function mkRow(i,r){
+  const icon = await getTokenIcon(r.baseAddress);
+  const iconHtml = icon ? `<img class="tokicon tokclick" data-ca="${r.baseAddress}" src="${icon}" alt="" title="Single‑token view">` : ``;
+  const head = `<div class="rowhead"><span>#${r.rank ?? (i+1)}</span>${iconHtml}</div>`;
+  const name = r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${r.name || '—'} <span class="tag">${r.symbol || ''}</span></a>`
+                     : `${r.name || '—'} <span class="tag">${r.symbol || ''}</span>`;
+  const capVal = (r.marketCap != null && isFinite(r.marketCap)) ? r.marketCap
+                 : (r.fdv != null && isFinite(r.fdv)) ? r.fdv
+                 : null;
+  return `<tr>${td(head)}${td(name)}${td(chg(r.priceChange?.h24))}${td(fmtUSD(r.volume24h))}${td(capVal!=null ? fmtUSD(capVal) : '—')}</tr>`;
+}
   function wireTokenIconClicks(){
     document.querySelectorAll('.tokclick').forEach(img=>{
       img.addEventListener('click',(e)=>{ e.preventDefault(); e.stopPropagation(); startSingleFromIcon(img.dataset.ca); });
