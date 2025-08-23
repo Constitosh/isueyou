@@ -1,14 +1,7 @@
-/* abs-tabs-integration.js — v3.1
-   - Cache-first deep scan via /api/token-stats, then optional reload
-   - Snapshot timestamp next to "Token Allocation & Stats"
-   - Blue "Reload" works (force fresh + save)
-   - Address trims in First‑25, overlay text as requested, hidden common funders
-   - Row click → funding overlay restored (no duplicate shadowing)
-*/
+/* abs-tabs-integration.js — v3.1 (row click overlay fixed; bubble sizing improved) */
 (function (global) {
   const TABS = {};
 
-  // ===== Config =====
   const BASE_URL = 'https://api.etherscan.io/v2/api';
   const CHAIN_ID = 2741;
   const ETHERSCAN_API = 'H13F5VZ64YYK4M21QMPEW78SIKJS85UTWT';
@@ -21,13 +14,10 @@
   const TOP_COMMON_LIMIT = 5;
   const SPECIAL_HOLDERS_CA = '0x8c3d850313eb9621605cd6a1acb2830962426f67';
 
-  // ===== DOM =====
   const $ = (s) => document.querySelector(s);
-
   const scanStatusEl = () => $('#scanStatus');
 
   // A
-  const aTitle = () => $('#aTitle');
   const aSnap = () => $('#aSnapshot');
   const aStats = () => $('#aTokenStats');
   const aBubble = () => $('#bubble-canvas');
@@ -48,14 +38,12 @@
   const holdersExpander = () => $('#holdersExpander');
   const holdersToggle = () => $('#holdersToggle');
 
-  // Overlays + header tile
   const fundersOverlay = () => $('#fundersOverlay');
   const fundersInner = () => $('#fundersInner');
   const commonOverlay = () => $('#commonOverlay');
   const commonInner = () => $('#commonInner');
   const holdersTile = () => $('#tabsHolders');
 
-  // ===== Helpers =====
   function setScanStatus(msg) {
     if (scanStatusEl()) scanStatusEl().textContent = msg || '';
     const bubbleStatusText = document.getElementById('bubbleStatusText');
@@ -87,7 +75,6 @@
   function topicToAddress(topic){ return '0x' + topic.slice(26).toLowerCase(); }
   function isCA(s){ return /^0x[0-9a-fA-F]{40}$/.test((s || '').trim()); }
 
-  // ===== Rate-limited queue =====
   const q = []; let pumping = false;
   const sleep = (ms)=>new Promise(r=>setTimeout(r,ms));
   async function pump(){ if (pumping) return; pumping = true; while(q.length){ const job=q.shift(); try{ const res=await job.fn(); job.resolve(res);}catch(e){ job.reject(e);} await sleep(MIN_INTERVAL_MS);} pumping=false; }
@@ -106,7 +93,6 @@
     });
   }
 
-  // ===== API wrappers =====
   async function apiLogsTransfer(token){
     const TRANSFER_SIG = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
     return apiGet({ module:'logs', action:'getLogs', address: token, topic0: TRANSFER_SIG, fromBlock: 0, toBlock: 'latest' });
@@ -127,7 +113,6 @@
     return /^[0-9]+$/.test(raw) ? BigInt(raw) : 0n;
   }
 
-  // ===== Dexscreener helpers =====
   async function priceUsdForToken(contract){
     try{
       const res = await fetch(`https://api.dexscreener.com/token-pairs/v1/abstract/${contract}`);
@@ -160,13 +145,10 @@
     return { totalUsd: total };
   }
 
-  // ===== Bubble map =====
   function renderBubble({ root, holders, extras }){
     root.innerHTML='';
     const width  = root.clientWidth || 960;
-    // try to honor container height; ensure decent desktop height
     const height = Math.max(600, root.clientHeight || 520);
-
     const data = holders.concat(extras || []);
     const svg = d3.select(root).append('svg').attr('width', width).attr('height', height);
     const pack = d3.pack().size([width,height]).padding(3);
@@ -206,7 +188,6 @@
       .text(d=> d.data.__type==='lp' ? 'LP' : `${(d.data.pct||0).toFixed(2)}%`);
   }
 
-  // ===== Persistence API =====
   async function loadCachedScan(ca){
     try{
       const r = await fetch(`/api/token-stats/${ca}`);
@@ -226,7 +207,6 @@
     }catch{ return { ok:false }; }
   }
 
-  // ===== Receivers + statuses =====
   async function getFirst27Receivers(token){
     const logs = await apiLogsTransfer(token);
     const seen = new Set(); const out=[];
@@ -259,7 +239,6 @@
     return { ...rec, firstInAmount:firstIn, timeStamp: earliestTs!==Infinity ? earliestTs : rec.timeStamp, totalIn, totalOut, holdings:h, status, sClass, filteredOut:false };
   }
 
-  // ===== Funding discovery & overlays =====
   async function getFundingWallets(addr, cutoffTs){
     const [nativeTxs, erc20Txs] = await Promise.all([
       apiTxlist(addr).catch(()=>[]),
@@ -411,7 +390,6 @@
     }catch(e){ commonInner().innerHTML = `<div class="banner mono">Error: ${e.message||e}</div>`; }
   }
 
-  // ===== Full token overview (scan) + save =====
   async function doFreshScan(contract){
     const result = { meta:{ contract }, a:{}, b:{} };
 
@@ -428,7 +406,6 @@
       creatorAddress = (Array.isArray(cData?.result) && cData.result[0]?.contractCreator) ? cData.result[0].contractCreator.toLowerCase() : '';
     }catch{}
 
-    // Pairs (LP bubbles)
     let pairAddresses = [];
     try{
       const pr = await fetch(`https://api.dexscreener.com/token-pairs/v1/abstract/${contract}`);
@@ -470,7 +447,6 @@
       .map(([address,units])=>({ address, units }));
     holdersAll.sort((a,b)=> (b.units>a.units) ? 1 : (b.units<a.units) ? -1 : 0);
 
-    // verify top
     setScanStatus('Verifying top balances…');
     const toVerify = holdersAll.slice(0,150).map(h=>h.address); const verified={};
     for (let i=0;i<toVerify.length;i++){ const a=toVerify[i]; verified[a]=await tokenBalanceOf(contract,a).catch(()=>null); await sleep(100); }
@@ -493,7 +469,6 @@
     const top10Pct = holdersForBubbles.slice(0,10).reduce((s,h)=> s+(h.pct||0),0);
     const creatorPct = creatorAddress ? (holdersForBubbles.find(h=>h.address.toLowerCase()===creatorAddress)?.pct || 0) : 0;
 
-    // A (stats)
     result.a = {
       tokenDecimals,
       minted: Number(mintedUnits)/(10**tokenDecimals),
@@ -507,7 +482,6 @@
       lpNodes
     };
 
-    // B (holders + receivers)
     const top25 = holdersAll.slice(0,25).map((h,i)=>{
       const first = firstInMap.get(h.address) || { ts:0, v:0n };
       return {
@@ -530,15 +504,12 @@
     }
 
     result.b = { first25: enriched.slice(0,25), top25 };
-
     return result;
   }
 
   function renderFromData(snapshot){
-    // Header note
     if (aSnap()) aSnap().textContent = snapshot.ts ? new Date(snapshot.ts).toLocaleString() : '';
 
-    // A
     const A = snapshot.a || {};
     aStats().innerHTML = `
       <div class="statrow mono"><b>Minted</b><span>${fmtNum(A.minted,6)}</span></div>
@@ -551,12 +522,12 @@
     renderBubble({ root:aBubble(), holders:(A.holdersForBubbles||[]), extras:(A.lpNodes||[]) });
     aBubbleNote().innerHTML = A.burned>0 ? `<span class="mono">🔥 Burn — ${fmtNum(A.burned,6)} tokens</span>` : '';
 
-    // B
     const B = snapshot.b || {};
     const buyers = (B.first25||[]);
     const holders = (B.top25||[]);
-    renderStatusGrid(buyers);
     const five = buyers.slice(0,5), rest = buyers.slice(5,25);
+    bStatusGrid().innerHTML = ''; buyers.slice(0,25).forEach(r=>{ const d=document.createElement('div'); d.className='s-pill '+r.sClass; d.textContent=r.status; bStatusGrid().appendChild(d); });
+
     buyersTop5().innerHTML = five.map((r,i)=>rowBuyers(i,r)).join('');
     buyersRest().innerHTML = rest.map((r,i)=>rowBuyers(i+5,r)).join('');
     buyersExpander().style.display = rest.length ? '' : 'none';
@@ -587,7 +558,6 @@
     return { usedCache:false };
   }
 
-  // special holders poll (tile #3)
   async function computeApproxHolders(contract){
     try{
       const txs = await fetchAllTokenTx(contract);
@@ -609,10 +579,8 @@
     setInterval(()=>computeApproxHolders(SPECIAL_HOLDERS_CA), 5*60*1000);
   }
 
-  // ===== Public API =====
   TABS.startScan = async function(ca, { force=false } = {}){
     if (!isCA(ca)){ setScanStatus('Enter a valid token contract.'); return; }
-    // wipe UI
     aSnap().textContent=''; aStats().innerHTML=''; aBubble().innerHTML=''; aBubbleNote().textContent='';
     buyersTop5().innerHTML=''; buyersRest().innerHTML=''; holdersTop5().innerHTML=''; holdersRest().innerHTML='';
     bStatusGrid().innerHTML='';
@@ -636,7 +604,6 @@
     bStatusGrid().innerHTML='';
   };
 
-  // Buttons & overlays
   function wireTabButtons(){
     if (!firstBtn() || !topBtn()) return;
     firstBtn().onclick = ()=>{ firstBtn().classList.add('active'); topBtn().classList.remove('active'); buyersPanel().style.display=''; holdersPanel().style.display='none'; };
@@ -655,7 +622,6 @@
     wireTabButtons(); wireOverlays(); startHoldersPoll();
   };
 
-  // internal helpers
   async function fetchAllTokenTx(contract){
     const all=[]; const offset=10000; let page=1;
     while(true){
