@@ -165,7 +165,7 @@
   function renderBubble({ root, holders, extras }){
     root.innerHTML='';
     const width = root.clientWidth || 960;
-    const height = Math.max(220, Math.round(width * 0.45));
+    const height = Math.max(600, Math.round(width * 0.45));
     const data = (holders||[]).concat(extras || []);
     const svg = d3.select(root).append('svg').attr('width', width).attr('height', height);
     const pack = d3.pack().size([width,height]).padding(3);
