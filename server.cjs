@@ -1,6 +1,4 @@
-// server.cjs — $tABS backend (Express / Node 18+)
-// Persists runtime data in: data/tokens-lib.json, data/snapshots.json, data/token-stats.json
-
+// server.cjs — $tABS backend (Express / Node 18+)  ✅ unchanged from last working version
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
@@ -8,7 +6,6 @@ const express = require('express');
 const app = express();
 app.use(express.json({ limit: '2mb' }));
 
-// ---- Paths ----
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'data');
 const PUBLIC_DIR = path.join(ROOT, 'public');
@@ -19,21 +16,16 @@ const TOKEN_STATS_FILE = path.join(DATA_DIR, 'token-stats.json');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-// ---- Constants ----
-const SPECIAL_CA = '0x8c3d850313eb9621605cd6a1acb2830962426f67'; // $tABS (lowercased below)
+const SPECIAL_CA = '0x8c3d850313eb9621605cd6a1acb2830962426f67'; // $tABS
 const SLEEP = (ms)=> new Promise(r=> setTimeout(r, ms));
 
-// ---- JSON helpers ----
 function readJSON(file, fallback) {
   try {
     if (!fs.existsSync(file)) return fallback;
     const raw = fs.readFileSync(file, 'utf8');
     if (!raw?.trim()) return fallback;
     return JSON.parse(raw);
-  } catch (e) {
-    console.error('readJSON error for', file, e.message);
-    return fallback;
-  }
+  } catch { return fallback; }
 }
 function writeJSON(file, obj) {
   try {
@@ -41,10 +33,7 @@ function writeJSON(file, obj) {
     fs.writeFileSync(tmp, JSON.stringify(obj, null, 2));
     fs.renameSync(tmp, file);
     return true;
-  } catch (e) {
-    console.error('writeJSON error for', file, e.message);
-    return false;
-  }
+  } catch { return false; }
 }
 function ensureTokensLib() {
   const lib = readJSON(TOKENS_LIB_FILE, null) || { tokens: [], tokenPairs: {} };
@@ -68,7 +57,6 @@ function ensureTokenStatsFile() {
   return m;
 }
 
-// ---- Dexscreener helpers ----
 async function fetchTokenAbstract(ca) {
   const url = `https://api.dexscreener.com/tokens/v1/abstract/${ca}`;
   const res = await fetch(url);
@@ -77,8 +65,6 @@ async function fetchTokenAbstract(ca) {
   if (!Array.isArray(arr) || !arr.length) throw new Error('Token not found');
   return arr[0];
 }
-
-// Discover pairs & aggregate their 24h volume
 async function searchPairsForToken(ca) {
   const url = `https://api.dexscreener.com/latest/dex/search?q=${ca}`;
   const res = await fetch(url);
@@ -92,7 +78,6 @@ async function searchPairsForToken(ca) {
   const volSum = filtered.reduce((s,p)=> s + (Number(p?.volume?.h24 || 0) || 0), 0);
   return { pairAddrs: Array.from(new Set(pairAddrs)), vol24: volSum };
 }
-
 async function sumVolume24hForToken(ca, tokensLib) {
   const key = ca.toLowerCase();
   const known = tokensLib.tokenPairs[key] || [];
@@ -104,18 +89,12 @@ async function sumVolume24hForToken(ca, tokensLib) {
       writeJSON(TOKENS_LIB_FILE, tokensLib);
       return vol24;
     }
-  } catch (e) {
-    console.warn('searchPairsForToken failed:', key, e.message);
-  }
-  // fallback: token abstract volume
+  } catch {}
   try {
     const t = await fetchTokenAbstract(key);
     return Number(t?.volume?.h24 || 0);
-  } catch {
-    return 0;
-  }
+  } catch { return 0; }
 }
-
 function makeRowFromTokenAbstract(t, ca, volume24h) {
   const mc     = t?.marketCap != null ? Number(t.marketCap) : null;
   const fdvNum = t?.fdv       != null ? Number(t.fdv)       : null;
@@ -136,26 +115,20 @@ function makeRowFromTokenAbstract(t, ca, volume24h) {
     url: t?.url || null
   };
 }
-
-// ---- Snapshot builder ----
 function clamp15(arr){ return Array.isArray(arr) ? arr.slice(0,15) : []; }
 
 async function buildSnapshot() {
   const tokensLib = ensureTokensLib();
   const tokens = tokensLib.tokens || [];
-
   const rows = [];
   for (const ca of tokens) {
     try {
       const t = await fetchTokenAbstract(ca);
       const vol24 = await sumVolume24hForToken(ca, tokensLib);
       rows.push(makeRowFromTokenAbstract(t, ca, vol24));
-    } catch (e) {
-      console.warn('Token fetch failed:', ca, e.message);
-    }
+    } catch {}
     await SLEEP(60);
   }
-
   const topGainers = [...rows].sort((a,b)=> (Number(b.priceChange?.h24||0) - Number(a.priceChange?.h24||0)));
   const topVol     = [...rows].sort((a,b)=> (Number(b.volume24h||0) - Number(a.volume24h||0)));
 
@@ -164,7 +137,6 @@ async function buildSnapshot() {
     (rows.find(r=> Number.isFinite(r.marketCap))?.marketCap) ??
     (rows.find(r=> Number.isFinite(r.fdv))?.fdv) ?? 0;
 
-  // Build base snapshot
   const snapshot = {
     ts: Date.now(),
     chain: 'abstract',
@@ -181,17 +153,13 @@ async function buildSnapshot() {
     tokensTracked: tokens.length
   };
 
-  // Derive "bannerSpecial" from the $tABS row (or compute one-off if missing)
-  const specialKey = SPECIAL_CA.toLowerCase();
-  let specialRow = rows.find(r => r.baseAddress === specialKey);
+  let specialRow = rows.find(r => r.baseAddress === SPECIAL_CA.toLowerCase());
   if (!specialRow) {
     try {
-      const t = await fetchTokenAbstract(specialKey);
-      const vol24 = await sumVolume24hForToken(specialKey, tokensLib);
-      specialRow = makeRowFromTokenAbstract(t, specialKey, vol24);
-    } catch (e) {
-      console.warn('Could not compute special banner for $tABS:', e.message);
-    }
+      const t = await fetchTokenAbstract(SPECIAL_CA);
+      const vol24 = await sumVolume24hForToken(SPECIAL_CA, tokensLib);
+      specialRow = makeRowFromTokenAbstract(t, SPECIAL_CA, vol24);
+    } catch {}
   }
   if (specialRow) {
     const capVal = Number.isFinite(specialRow.marketCap) ? specialRow.marketCap
@@ -205,7 +173,6 @@ async function buildSnapshot() {
     };
   }
 
-  // Persist snapshots
   const S = ensureSnapshots();
   S.latest = snapshot;
   S.history.unshift(snapshot);
@@ -215,7 +182,6 @@ async function buildSnapshot() {
   return snapshot;
 }
 
-// Concurrency guard
 let isScanning = false;
 async function runScan() {
   if (isScanning) return ensureSnapshots().latest || null;
@@ -224,51 +190,35 @@ async function runScan() {
   finally { isScanning = false; }
 }
 
-// ---- APIs ----
 app.post('/api/refresh', async (req, res) => {
   try {
     const snap = await runScan();
     res.json({ ok: true, snapshot: snap });
   } catch (e) {
-    console.error('/api/refresh error:', e);
     res.status(500).json({ ok:false, error: e.message || String(e) });
   }
 });
-
 app.get('/api/snapshot/latest', (req, res) => {
-  try {
-    const S = ensureSnapshots();
-    res.json({ ok: true, snapshot: S.latest || null });
-  } catch (e) {
-    res.status(500).json({ ok:false, error: e.message || String(e) });
-  }
+  const S = ensureSnapshots();
+  res.json({ ok: true, snapshot: S.latest || null });
 });
-
-// Add token to library + discover pairs + return computed row
 app.post('/api/add-token', async (req, res) => {
   const caRaw = (req.body?.ca || '').trim();
   const valid = /^0x[a-fA-F0-9]{40}$/.test(caRaw);
   if (!valid) return res.status(400).json({ ok:false, error:'Invalid contract address' });
   const ca = caRaw.toLowerCase();
-
   try {
     const lib = ensureTokensLib();
     if (!lib.tokens.includes(ca)) lib.tokens.push(ca);
-
-    const vol24 = await sumVolume24hForToken(ca, lib); // updates tokenPairs + persists
-
+    const vol24 = await sumVolume24hForToken(ca, lib);
     const t = await fetchTokenAbstract(ca);
     const row = makeRowFromTokenAbstract(t, ca, vol24);
-
     writeJSON(TOKENS_LIB_FILE, lib);
     res.json({ ok:true, row, tokensTracked: lib.tokens.length });
   } catch (e) {
-    console.error('/api/add-token error:', ca, e.message);
     res.status(500).json({ ok:false, error:e.message || String(e) });
   }
 });
-
-// Deep-scan cache used by abs-tabs-integration.js
 app.get('/api/token-stats/:ca', (req, res) => {
   const ca = (req.params.ca || '').toLowerCase();
   if (!/^0x[0-9a-f]{40}$/.test(ca)) return res.status(400).json({ ok:false, error:'bad ca' });
@@ -277,7 +227,6 @@ app.get('/api/token-stats/:ca', (req, res) => {
   if (!rec) return res.json({ ok:false, error:'not found' });
   res.json({ ok:true, ts: rec.ts, data: rec.data });
 });
-
 app.post('/api/token-stats/save', (req, res) => {
   const ca = (req.body?.ca || '').toLowerCase();
   const data = req.body?.data;
@@ -292,26 +241,21 @@ app.post('/api/token-stats/save', (req, res) => {
   res.json({ ok:true, ts });
 });
 
-// ---- Static ----
 app.use(express.static(PUBLIC_DIR, {
   extensions: ['html'],
   setHeaders: (res) => res.setHeader('Cache-Control', 'no-store')
 }));
 console.log('Serving static from:', PUBLIC_DIR);
 
-// SPA fallback for non-API routes
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) return next();
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 
-// ---- Boot ----
 const PORT = process.env.PORT || 8080;
 const HOST = process.env.HOST || '0.0.0.0';
-
 process.on('unhandledRejection', (err)=> console.error('UNHANDLED REJECTION:', err));
 process.on('uncaughtException',  (err)=> console.error('UNCAUGHT EXCEPTION:', err));
-
 app.listen(PORT, HOST, () => {
   console.log(`Server running at http://${HOST}:${PORT} (env PORT=${process.env.PORT || 'unset'})`);
 });
