@@ -152,6 +152,41 @@ footer .wrap{ position:relative; z-index:1; }
     tbody td{padding:8px 8px}
     #bubble-canvas{min-height:150px}
   }
+
+  /* --- Footer fade pinned to bottom only (hard override) ------------------- */
+footer{
+  position: relative;
+  background: none !important;      /* kill any previous footer gradient */
+  overflow: hidden;                  /* keep the fade inside the footer */
+}
+
+/* draw a short fade *inside* the footer, glued to the bottom edge */
+footer::before{
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 84px;                      /* adjust the visible fade height */
+  background: linear-gradient(to top, rgba(7,193,96,.10), rgba(7,193,96,0));
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ensure the text sits above the fade */
+footer .wrap{
+  position: relative;
+  z-index: 1;
+}
+
+/* safety: if any older styles added a gradient to a parent wrapper, null it */
+.wrap.footer-wrap,
+.wrap.footer-wrap::before,
+.wrap.footer-wrap::after{
+  background: none !important;
+}
+
+/* optional: if you ever had a fixed/absolute footer by mistake, undo it */
+footer{ position: relative !important; bottom: auto !important; }
+
 </style>
 </head>
 <body>
