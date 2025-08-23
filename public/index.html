@@ -20,6 +20,25 @@
   .mono, table, .hstat b, .tag, .pill, .muted, h2, .tabbtn { font-family:"Liberation Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important; }
   a{color:inherit;text-decoration:none}
 
+
+#bubble-canvas {
+  min-height: 520px;   /* was 180px / 220px in your versions */
+  height: 600px;       /* explicit height for desktop */
+}
+@media (max-width: 900px) {
+  #bubble-canvas {
+    height: 320px;     /* shrink for tablets/phones */
+  }
+}
+@media (max-width: 480px) {
+  #bubble-canvas {
+    height: 240px;     /* even smaller on narrow devices */
+  }
+}
+
+
+
+  
   .wrap{max-width:1200px;margin:0 auto;padding:18px 24px}
   header{position:sticky;top:0;backdrop-filter:blur(8px);background:linear-gradient(180deg,rgba(11,31,23,.9),rgba(11,31,23,.5));border-bottom:1px solid rgba(255,255,255,.06);z-index:20}
   .brand{display:flex;align-items:center;gap:12px}
